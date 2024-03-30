@@ -16,7 +16,7 @@ If you don't already have a config file, one will be created on first boot of th
 ## Usage
 Players can craft cameras using the following recipe:
 
-![crafting](https://i.imgur.com/lUvd8wE.png)
+![crafting](https://i.imgur.com/GsrxLPY.png)
 
 Operators on the server can take pictures with the command `/takepicture`
 ## Pictures
