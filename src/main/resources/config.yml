@@ -1,0 +1,30 @@
+settings:
+  camera:
+    shadows: true
+    permissions: true
+    recipe:
+      ingredients:
+        I: IRON_INGOT
+        G: GLASS_PANE
+        T: GLOWSTONE_DUST
+        R: REDSTONE
+      shape:
+        - IGI
+        - ITI
+        - IRI
+      enabled: false
+    transparentWater: false
+    # Skin must be located at one of Mojangs/Minecrafts whitelisted domains.
+    # New skin will be applied to newly crafted cameras.
+    skinUrl: "https://textures.minecraft.net/texture/ded4781df856279522d844252eca79a6cc6f24a9baa89d293d829053fd9c9c"
+    #disabling async may cause minor lag spikes. enabling async will cause slower rendering, but won't affect server performance
+    renderAsync: true
+  messages:
+    notready: '&cCameras is still loading, please wait.'
+    invfull: '&cYou cannot take a picture with a full inventory.'
+    delay: '&cPlease wait before taking another picture.'
+    nopaper: '&cYou must have paper in order to take a picture.'
+    enabled: true
+  delay:
+    amount: 1000
+    enabled: true
