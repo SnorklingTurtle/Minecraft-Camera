@@ -1,7 +1,7 @@
-Cameras
-========
+Minecraft Camera
+================
 
-Cameras plugin for Spigot. Adds craft-able cameras to your Minecraft server and the ability to take pictures. 
+Minecraft Camera plugin for Spigot. Adds craft-able cameras to your Minecraft server and the ability to take pictures. 
 
 This is an updated version of the [Cameras plugin by Cup0fCode](https://github.com/Cup0fCode/Cameras/). Tested on Minecraft 1.20.4.
 
