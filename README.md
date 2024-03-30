@@ -8,10 +8,12 @@ This is an updated version of the [Cameras plugin by Cup0fCode](https://github.c
 ## Installation
 
 1. [Download the plugin](https://github.com/SnorklingTurtle/Minecraft-Camera/releases/)
-2. Move the Jar-file into the server plugin-folder
+2. Move the jar-file into the server plugin-folder
 3. Start the server
 
 If you don't already have a config file, one will be created on first boot of the server. The config is located at `plugins/Minecraft-Camera/config.yml`. Restart the server after editing the config. 
+
+Images are saved as txt-files in `plugins/Minecraft-Camera/maps`. Each file is usually at a size of 3-12 KB.
 
 ## Usage
 Players can craft cameras using the following recipe:
@@ -32,15 +34,18 @@ Operators on the server can take pictures with the command `/takepicture`
 
 ## Todo
 * [Bug] `renderAsync: true` seems broken and might crash the server
-* Test with Geyser
-* `/takepicture` seems to ignore the requirement of paper
+* [QA] Test with Geyser
+* [Feature] `/takepicture` seems to ignore the requirement of paper
   * Make paper requirement optional in the config
-* Don't take picture, when cancelling placement of camera.
-* Check if downloading the texture pack zip is needed (389 KB). If texture pack is needed:
+* [Optimize] See if loading maps at boot can be improved (async? sqlite?)
+* [Optimize] Prefix all console logging with `[Camera]`
+* [Optimize] Don't take picture, when cancelling placement of camera.
+* [Optimize] Check if downloading the texture pack zip is needed (389 KB). If texture pack is needed:
   * Move texture pack zip to this repository 
   * Upgrade texture pack to 1.20.4
   * Make the url to texture pack configurable
-* Add option to place camera on the ground (might conflict with claims plugin).
+* [Optimize] See if it's possible to remove despawned images from the `maps` folder
+* [Feature] Add option to place camera on the ground (might conflict with claims plugin).
 
 ## Issues
 
