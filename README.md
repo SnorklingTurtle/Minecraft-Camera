@@ -5,16 +5,20 @@ Minecraft Camera plugin for Spigot. Adds craft-able cameras to your Minecraft se
 
 This is an updated version of the [Cameras plugin by Cup0fCode](https://github.com/Cup0fCode/Cameras/). Tested on Minecraft 1.20.4.
 
-## Download
+## Installation
 
-Spigot: https://www.spigotmc.org/resources/cameras.86393/
+1. [Download the plugin](https://github.com/SnorklingTurtle/Minecraft-Camera/releases/)
+2. Move the Jar-file into the server plugin-folder
+3. Start the server
+
+If you don't already have a config file, one will be created on first boot of the server. The config is located at `plugins/Cameras/config.yml`. Restart the server after editing the config. 
 
 ## Usage
 Players can craft cameras using the following recipe:
 
 ![crafting](https://i.imgur.com/lUvd8wE.png)
 
-Operators on the server can take pictures with the command /takepicture
+Operators on the server can take pictures with the command `/takepicture`
 ## Pictures
 
 <img src="https://i.imgur.com/Bzi99fL.png" width="128">
