@@ -33,11 +33,10 @@ Operators on the server can take pictures with the command `/takepicture`
 * Image are distorted when looking up/down.
 
 ## Todo
+* [QA] Test with Geyser
 * [Bug] `renderAsync: true` seems broken and might crash the server
 * [Bug] It's possible to take pictures with a full inventory using `/takepicture`
-* [Bug] It's possible to take pictures with a without paper using `/takepicture`
-* [QA] Test with Geyser
-* [Feature] `/takepicture` seems to ignore the requirement of paper
+* [Bug] `/takepicture` seems to ignore the requirement of paper
   * Make paper requirement optional in the config
 * [Optimize] See if loading maps at boot can be improved (async? sqlite?)
 * [Optimize] Prefix all console logging with `[Camera]`
