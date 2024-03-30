@@ -3,6 +3,7 @@ package main.java.water.of.cup.cameras;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -10,14 +11,25 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
 
 public class Picture {
     private static HashMap<Player, Long> delayMap = new HashMap<>();
 
     public static boolean takePicture(Player p) {
         Camera instance = Camera.getInstance();
+
         boolean messages = instance.getConfig().getBoolean("settings.messages.enabled");
+
+        boolean usePerms = instance.getConfig().getBoolean("settings.camera.permissions");
+        if (usePerms && !p.hasPermission("cameras.useitem")) return false;
+
+        if (p.getInventory().firstEmpty() == -1) { //check to make sure there is room in the inventory for the map
+            if (messages) {
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("settings.messages.invfull")));
+            }
+            return false;
+        }
+
         if (instance.getResourcePackManager().isLoaded()) {
             if (instance.getConfig().getBoolean("settings.delay.enabled")) {
                 if (!delayMap.containsKey(p)) {
@@ -56,6 +68,9 @@ public class Picture {
 
         itemStack.setItemMeta(mapMeta);
         p.getInventory().addItem(itemStack);
+
+        // Play capture sound
+        p.playSound(p.getLocation(), Sound.BLOCK_PISTON_EXTEND, 0.5F, 2.0F);
 
         return true;
     }

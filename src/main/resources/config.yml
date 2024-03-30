@@ -1,6 +1,6 @@
 settings:
   camera:
-    shadows: true
+    # Whether to control permissions using Bukkit permissions.yml (cameras.craft, cameras.useitem cameras.command, cameras.paperRequired)
     permissions: true
     recipe:
       ingredients:
@@ -12,8 +12,9 @@ settings:
         - IGI
         - ITI
         - IRI
-      enabled: false
+      enabled: true
     transparentWater: false
+    shadows: true
     # Skin must be located at one of Mojangs/Minecrafts whitelisted domains.
     # New skin will be applied to newly crafted cameras.
     skinUrl: "https://textures.minecraft.net/texture/ded4781df856279522d844252eca79a6cc6f24a9baa89d293d829053fd9c9c"

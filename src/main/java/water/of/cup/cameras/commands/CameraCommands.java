@@ -13,21 +13,24 @@ public class CameraCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+        if (!cmd.getName().equalsIgnoreCase("takepicture"))
+            return false;
+
+        if (!instance.getConfig().getBoolean("settings.camera.permissions"))
+            return false;
+
         if (!(sender instanceof Player)) {
-            return true;
+            return false;
         }
         Player p = (Player) sender;
 
-        if (cmd.getName().equalsIgnoreCase("takepicture")) {
-            if (instance.getConfig().getBoolean("settings.camera.permissions")) {
-                if (!p.hasPermission("cameras.command")) return false;
-            }
-
-            Picture.takePicture(p);
-            return true;
+        if (!p.hasPermission("cameras.command")) {
+            return false;
         }
 
-        return false;
+        Picture.takePicture(p);
+
+        return true;
     }
 
 }

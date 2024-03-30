@@ -20,7 +20,9 @@ Players can craft cameras using the following recipe:
 
 ![crafting](https://i.imgur.com/GsrxLPY.png)
 
-Operators on the server can take pictures with the command `/takepicture`
+Operators on the server (`/op <username>`) can take pictures with the command `/takepicture`. When using this command a camera and paper is 
+not required, however you still need space in your inventory.
+
 ## Pictures
 
 <img src="https://i.imgur.com/Bzi99fL.png" width="128">
