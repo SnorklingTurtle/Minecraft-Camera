@@ -11,7 +11,7 @@ This is an updated version of the [Cameras plugin by Cup0fCode](https://github.c
 2. Move the Jar-file into the server plugin-folder
 3. Start the server
 
-If you don't already have a config file, one will be created on first boot of the server. The config is located at `plugins/Cameras/config.yml`. Restart the server after editing the config. 
+If you don't already have a config file, one will be created on first boot of the server. The config is located at `plugins/Minecraft-Camera/config.yml`. Restart the server after editing the config. 
 
 ## Usage
 Players can craft cameras using the following recipe:
@@ -31,7 +31,10 @@ Operators on the server can take pictures with the command `/takepicture`
 * Image are distorted when looking up/down.
 
 ## Todo
+* [Bug] `renderAsync: true` seems broken and might crash the server
 * Test with Geyser
+* `/takepicture` seems to ignore the requirement of paper
+  * Make paper requirement optional in the config
 * Don't take picture, when cancelling placement of camera.
 * Check if downloading the texture pack zip is needed (389 KB). If texture pack is needed:
   * Move texture pack zip to this repository 
