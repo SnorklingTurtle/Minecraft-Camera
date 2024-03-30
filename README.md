@@ -23,6 +23,27 @@ Players can craft cameras using the following recipe:
 Operators on the server (`/op <username>`) can take pictures with the command `/takepicture`. When using this command a camera and paper is 
 not required, however you still need space in your inventory.
 
+### Permissions
+
+If `permissions` is se to `true` in config.yml, you can use the following in permissions.yml:
+
+```
+# permissions.yml
+cameras.craft:
+  description: Allow crafting camera
+  default: true
+cameras.useitem:
+  description: Allow using the camera
+  default: false
+cameras.command:
+  description: Allow the command /takepicture
+  default: false
+cameras.paperRequired:
+  description: Require paper to take a picture
+  default: true
+```
+
+
 ## Pictures
 
 <img src="https://i.imgur.com/Bzi99fL.png" width="128">
@@ -37,9 +58,6 @@ not required, however you still need space in your inventory.
 ## Todo
 * [QA] Test with Geyser
 * [Bug] `renderAsync: true` seems broken and might crash the server
-* [Bug] It's possible to take pictures with a full inventory using `/takepicture`
-* [Bug] `/takepicture` seems to ignore the requirement of paper
-  * Make paper requirement optional in the config
 * [Optimize] See if loading maps at boot can be improved (async? sqlite?)
 * [Optimize] Prefix all console logging with `[Camera]`
 * [Optimize] Don't take picture, when cancelling placement of camera.
@@ -49,6 +67,11 @@ not required, however you still need space in your inventory.
   * Make the url to texture pack configurable
 * [Optimize] See if it's possible to remove despawned images from the `maps` folder
 * [Feature] Add option to place camera on the ground (might conflict with claims plugin).
+
+## Done
+
+* [Bug] It's possible to take pictures with a full inventory using `/takepicture`
+* [QA] Make paper requirement optional in the config
 
 ## Issues
 

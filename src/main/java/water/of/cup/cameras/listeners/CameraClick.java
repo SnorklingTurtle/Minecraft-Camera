@@ -45,7 +45,9 @@ public class CameraClick implements Listener {
 
             boolean tookPicture = Picture.takePicture(p);
 
-            if (tookPicture) {
+            boolean isPaperRequired = !usePerms || p.hasPermission("cameras.paperRequired");
+
+            if (tookPicture && isPaperRequired) {
                 // remove 1 paper from the player's inventory
                 Map<Integer, ? extends ItemStack> paperHash = p.getInventory().all(Material.PAPER);
                 for (ItemStack item : paperHash.values()) {
