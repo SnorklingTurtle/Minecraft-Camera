@@ -18,8 +18,8 @@ settings:
     # Skin must be located at one of Mojangs/Minecrafts whitelisted domains.
     # New skin will be applied to newly crafted cameras.
     skinUrl: "https://textures.minecraft.net/texture/ded4781df856279522d844252eca79a6cc6f24a9baa89d293d829053fd9c9c"
-    #disabling async may cause minor lag spikes. enabling async will cause slower rendering, but won't affect server performance
-    renderAsync: false
+    # Lower number is more performant, but the picture will take longer to render
+    tracesPerTick: 256
   messages:
     notready: '&cCameras is still loading, please wait.'
     invfull: '&cYou cannot take a picture with a full inventory.'

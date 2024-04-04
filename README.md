@@ -57,7 +57,6 @@ cameras.paperRequired:
 
 ## Todo
 * [QA] Test with Geyser
-* [Bug] `renderAsync: true` seems broken and might crash the server
 * [Optimize] See if loading maps at boot can be improved (async? sqlite?)
 * [Optimize] Prefix all console logging with `[Camera]`
 * [Optimize] Don't take picture, when cancelling placement of camera.
@@ -70,6 +69,7 @@ cameras.paperRequired:
 
 ## Done
 
+* [Optimize] Render X amount of pixels per tick, for better performance
 * [Bug] It's possible to take pictures with a full inventory using `/takepicture`
 * [QA] Make paper requirement optional in the config
 

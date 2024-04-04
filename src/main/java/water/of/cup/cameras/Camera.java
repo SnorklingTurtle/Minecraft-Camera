@@ -217,10 +217,10 @@ public class Camera extends JavaPlugin {
         defaultConfig.put("settings.delay.amount", 1000);
         defaultConfig.put("settings.delay.enabled", true);
         defaultConfig.put("settings.camera.transparentWater", false);
-        defaultConfig.put("settings.camera.renderAsync", false);
         defaultConfig.put("settings.camera.skinUrl", "https://textures.minecraft.net/texture/ded4781df856279522d844252eca79a6cc6f24a9baa89d293d829053fd9c9c");
         defaultConfig.put("settings.camera.shadows", true);
         defaultConfig.put("settings.camera.permissions", true);
+        defaultConfig.put("settings.camera.tracesPerTick", 256);
 
         HashMap<String, String> defaultRecipe = new HashMap<>();
         defaultRecipe.put("I", Material.IRON_INGOT.toString());
