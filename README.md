@@ -58,7 +58,6 @@ cameras.paperRequired:
 ## Todo
 * [QA] Test with Geyser
 * [Optimize] See if loading maps at boot can be improved (async? sqlite?)
-* [Optimize] Prefix all console logging with `[Camera]`
 * [Optimize] Don't take picture, when cancelling placement of camera.
 * [Optimize] Check if downloading the texture pack zip is needed (389 KB). If texture pack is needed:
   * Move texture pack zip to this repository 
@@ -69,6 +68,7 @@ cameras.paperRequired:
 
 ## Done
 
+* [Optimize] Prefix all console logging with `[Camera]`
 * [Optimize] Render X amount of pixels per tick, for better performance
 * [Bug] It's possible to take pictures with a full inventory using `/takepicture`
 * [QA] Make paper requirement optional in the config
