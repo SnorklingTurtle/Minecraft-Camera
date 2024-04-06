@@ -51,11 +51,6 @@ public class Camera extends JavaPlugin {
         recipeKey = new NamespacedKey(this, "camera");
         this.resourcePackManager.initialize();
 
-        // Resource pack manager test
-        File grassFile = this.resourcePackManager.getTextureByMaterial(Material.GRASS_BLOCK);
-        if (grassFile != null)
-            getLogger().info(String.format("Successfully loaded resource pack (tested with texture %s)", grassFile.getName()));
-
         File folder = new File(getDataFolder() + "/maps");
         File[] listOfFiles = folder.listFiles();
 
