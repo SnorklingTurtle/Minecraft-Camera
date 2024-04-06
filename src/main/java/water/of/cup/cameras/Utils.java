@@ -581,7 +581,8 @@ public class Utils {
 
     @SuppressWarnings("deprecation")
     public static byte colorFromType(Block block, double[] dye) {
-        HashMap<Material, BufferedImage> imageMap = Camera.getInstance().getResourcePackManager().getImageHashMap();
+        Camera instance = Camera.getInstance();
+        HashMap<Material, BufferedImage> imageMap = instance.getResourcePackManager().getImageHashMap();
         if (blocksMap.containsKey(block.getType())) {
             // if blockMap has a color for the material, use that color
             Color color = blocksMap.get(block.getType());
@@ -598,7 +599,7 @@ public class Utils {
             // if imageMap has a color for the material, use that color
             BufferedImage image = imageMap.get(block.getType());
             if (image == null) {
-                Bukkit.getLogger().info("Missing Image For: " + block.getType());
+                instance.getLogger().info("Missing Image For: " + block.getType());
             } else {
                 // gets certain pixel in image to use as color TODO: Create a hashmap of colors
                 // so we don't need to access the image multiple times.

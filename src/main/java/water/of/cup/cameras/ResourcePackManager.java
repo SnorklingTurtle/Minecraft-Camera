@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 public class ResourcePackManager {
 
@@ -20,6 +21,7 @@ public class ResourcePackManager {
     private boolean isLoaded;
 
     public void initialize() {
+        Logger log = Camera.getInstance().getLogger();
         File dataFolder = Camera.getInstance().getDataFolder();
         File mapDir = new File(dataFolder, "resource-packs");
         if (!mapDir.exists()) {
@@ -27,7 +29,7 @@ public class ResourcePackManager {
         }
 
         if (mapDir.listFiles().length == 0) {
-            Bukkit.getLogger().info("No resource pack found, downloading... (this may take a while)");
+            log.info("No resource pack found, downloading... (this may take a while)");
             this.downloadResourcePack();
         }
 
@@ -40,11 +42,11 @@ public class ResourcePackManager {
         }
 
         if (this.resourcePackFile == null) {
-            Bukkit.getLogger().warning("No resource pack found. Please restart.");
+            log.warning("No resource pack found. Please restart.");
             return;
         }
 
-        Bukkit.getLogger().info("Loading in resource pack (this may take a while)");
+        log.info("Loading in resource pack (this may take a while)");
 
         new BukkitRunnable() {
             @Override
@@ -57,7 +59,8 @@ public class ResourcePackManager {
 
     public File getTextureByMaterial(Material material) {
         if (this.resourcePackFile == null) {
-            Bukkit.getLogger().warning("Tried getting texture file but no resource path found.");
+            Logger log = Camera.getInstance().getLogger();
+            log.warning("Tried getting texture file but no resource path found.");
             return null;
         }
 
@@ -81,8 +84,9 @@ public class ResourcePackManager {
     }
 
     private void initializeImageHashmap() {
+        Logger log = Camera.getInstance().getLogger();
         if (this.resourcePackFile == null) {
-            Bukkit.getLogger().warning("Tried getting texture file but no resource path found.");
+            log.warning("Tried getting texture file but no resource path found.");
             return;
         }
 
@@ -99,7 +103,7 @@ public class ResourcePackManager {
             }
         }
 
-        Bukkit.getLogger().info("Loaded " + this.imageHashMap.size() + " textures from resource pack "
+        log.info("Loaded " + this.imageHashMap.size() + " textures from resource pack "
                 + this.resourcePackFile.getName());
         this.isLoaded = true;
     }

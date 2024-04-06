@@ -10,15 +10,16 @@ import java.nio.file.Paths;
 public class MapStorage {
 
     public static void store(int id, byte[][] data) {
+        Camera instance = Camera.getInstance();
         // String serializedDataSimple = serializeMapDataSimple(data);
         String serializedData = serializeMapDataCompressed(data);
 
-        File file = new File(Camera.getInstance().getDataFolder(), "maps/map_" + id + ".txt");
+        File file = new File(instance.getDataFolder(), "maps/map_" + id + ".txt");
         if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e1) {
-                Bukkit.getLogger().severe("Error creating map file for mapId: " + id);
+                instance.getLogger().severe("Error creating map file for mapId: " + id);
                 e1.printStackTrace();
             }
         }
@@ -26,7 +27,7 @@ public class MapStorage {
         try {
             Files.write(Paths.get(file.getPath()), serializedData.getBytes());
         } catch (IOException e) {
-            Bukkit.getLogger().severe("Error writing to mapId: " + id);
+            instance.getLogger().severe("Error writing to mapId: " + id);
             e.printStackTrace();
         }
     }
