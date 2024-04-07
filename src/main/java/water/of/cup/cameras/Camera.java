@@ -19,17 +19,16 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Pattern;
 
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
+import org.bukkit.util.FileUtil;
 
 public class Camera extends JavaPlugin {
 
@@ -37,19 +36,21 @@ public class Camera extends JavaPlugin {
     private NamespacedKey recipeKey;
     private static Camera instance;
     List<Integer> mapIDsNotToRender = new ArrayList<>();
-    ResourcePackManager resourcePackManager = new ResourcePackManager();
+    ColorMapping colorMapping = new ColorMapping();
     private File configFile;
     private FileConfiguration config;
+
+
 
     @Override
     public void onEnable() {
         instance = this;
 
-        loadConfig();
-
         cameraKey = new NamespacedKey(this, "camera"); //Key which identifies a token loot placeholder
         recipeKey = new NamespacedKey(this, "camera");
-        this.resourcePackManager.initialize();
+
+        loadConfig();
+        this.colorMapping.initialize();
 
         File folder = new File(getDataFolder() + "/maps");
         File[] listOfFiles = folder.listFiles();
@@ -116,7 +117,6 @@ public class Camera extends JavaPlugin {
             }
         }
 
-        Utils.loadColors();
         getCommand("takePicture").setExecutor(new CameraCommands());
         registerListeners(new CameraClick(), new CameraPlace(), new PlayerJoin(), new PrepareItemCraft());
 
@@ -253,8 +253,8 @@ public class Camera extends JavaPlugin {
         this.saveConfig();
     }
 
-    public ResourcePackManager getResourcePackManager() {
-        return this.resourcePackManager;
+    public  ColorMapping getColorMapping() {
+        return this.colorMapping;
     }
 
     @Override

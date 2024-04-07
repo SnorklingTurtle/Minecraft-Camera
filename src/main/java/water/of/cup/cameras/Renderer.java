@@ -18,7 +18,7 @@ interface Callback {
 }
 
 public class Renderer extends MapRenderer {
-    private Camera instance = Camera.getInstance();
+    private final Camera instance = Camera.getInstance();
     private final Set<Coordinate> pickedCoordinates = new HashSet<>();
     private final Random random = new Random();
     Location eyes;

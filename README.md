@@ -57,17 +57,15 @@ cameras.paperRequired:
 
 ## Todo
 * [QA] Test with Geyser
-* [Optimize] See if loading maps at boot can be improved (async? sqlite?)
 * [Optimize] Don't take picture, when cancelling placement of camera.
-* [Optimize] Check if downloading the texture pack zip is needed (389 KB). If texture pack is needed:
-  * Move texture pack zip to this repository 
-  * Upgrade texture pack to 1.20.4
-  * Make the url to texture pack configurable
+* [Optimize] Can converting colors from string be improved
+* [Optimize] See if loading maps at boot can be improved (async? sqlite?)
 * [Optimize] See if it's possible to remove despawned images from the `maps` folder
 * [Feature] Add option to place camera on the ground (might conflict with claims plugin).
 
 ## Done
 
+* [Optimize] No need to read all every single image at server boot. Read colors from a color-mapping.config instead
 * [Optimize] Prefix all console logging with `[Camera]`
 * [Optimize] Render X amount of pixels per tick, for better performance
 * [Bug] It's possible to take pictures with a full inventory using `/takepicture`

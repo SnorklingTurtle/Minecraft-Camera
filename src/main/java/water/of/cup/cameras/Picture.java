@@ -30,7 +30,7 @@ public class Picture {
             return false;
         }
 
-        if (instance.getResourcePackManager().isLoaded()) {
+        if (instance.getColorMapping().isLoaded()) {
             if (instance.getConfig().getBoolean("settings.delay.enabled")) {
                 if (!delayMap.containsKey(p)) {
                     delayMap.put(p, System.currentTimeMillis());
