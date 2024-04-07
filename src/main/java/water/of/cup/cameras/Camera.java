@@ -2,7 +2,6 @@ package main.java.water.of.cup.cameras;
 
 import main.java.water.of.cup.cameras.commands.CameraCommands;
 import main.java.water.of.cup.cameras.listeners.CameraClick;
-import main.java.water.of.cup.cameras.listeners.CameraPlace;
 import main.java.water.of.cup.cameras.listeners.PlayerJoin;
 import main.java.water.of.cup.cameras.listeners.PrepareItemCraft;
 import org.bukkit.*;
@@ -22,13 +21,11 @@ import org.bukkit.persistence.PersistentDataType;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Pattern;
 
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
-import org.bukkit.util.FileUtil;
 
 public class Camera extends JavaPlugin {
 
@@ -118,7 +115,7 @@ public class Camera extends JavaPlugin {
         }
 
         getCommand("takePicture").setExecutor(new CameraCommands());
-        registerListeners(new CameraClick(), new CameraPlace(), new PlayerJoin(), new PrepareItemCraft());
+        registerListeners(new CameraClick(), new PlayerJoin(), new PrepareItemCraft());
 
         if (config.getBoolean("settings.camera.recipe.enabled"))
             addCameraRecipe();

@@ -27,6 +27,7 @@ public class Renderer extends MapRenderer {
     double pitch;
     double yaw;
     int tracesPerTick;
+    int renderDistance;
     byte[][] canvasBytes;
     MapCanvas canvas;
     MapView map;
@@ -46,6 +47,7 @@ public class Renderer extends MapRenderer {
         eyes = player.getEyeLocation().clone();
 
         tracesPerTick = instance.getConfig().getInt("settings.camera.tracesPerTick");
+        renderDistance = instance.getConfig().getInt("settings.camera.renderDistance");
         transparentWater = instance.getConfig().getBoolean("settings.camera.transparentWater");
         shadows = instance.getConfig().getBoolean("settings.camera.shadows");
 
@@ -128,10 +130,10 @@ public class Renderer extends MapRenderer {
         Vector rayTraceVector = new Vector(Math.cos(yaw + xrotate) * Math.cos(pitch + yrotate),
                 Math.sin(pitch + yrotate), Math.sin(yaw + xrotate) * Math.cos(pitch + yrotate));
 
-        RayTraceResult result = eyes.getWorld().rayTraceBlocks(eyes, rayTraceVector, 256);
+        RayTraceResult result = eyes.getWorld().rayTraceBlocks(eyes, rayTraceVector, renderDistance);
 
         // Color change for liquids
-        RayTraceResult liquidResult = eyes.getWorld().rayTraceBlocks(eyes, rayTraceVector, 256,
+        RayTraceResult liquidResult = eyes.getWorld().rayTraceBlocks(eyes, rayTraceVector, renderDistance,
                 FluidCollisionMode.ALWAYS, false);
         double[] dye = new double[]{1, 1, 1}; // values color is multiplied by
         if (transparentWater) {

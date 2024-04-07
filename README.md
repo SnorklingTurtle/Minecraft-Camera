@@ -57,7 +57,6 @@ cameras.paperRequired:
 
 ## Todo
 * [QA] Test with Geyser
-* [Optimize] Don't take picture, when cancelling placement of camera.
 * [Optimize] Can converting colors from string be improved
 * [Optimize] See if loading maps at boot can be improved (async? sqlite?)
 * [Optimize] See if it's possible to remove despawned images from the `maps` folder
@@ -65,6 +64,9 @@ cameras.paperRequired:
 
 ## Done
 
+* [Optimize] Set default render distance to 128 (instead of 256)
+* [Feature] Allow changing render distance from config
+* [Optimize] Don't take picture, when cancelling placement of camera.
 * [Optimize] No need to read all every single image at server boot. Read colors from a color-mapping.config instead
 * [Optimize] Prefix all console logging with `[Camera]`
 * [Optimize] Render X amount of pixels per tick, for better performance

@@ -19,7 +19,8 @@ settings:
     # New skin will be applied to newly crafted cameras.
     skinUrl: "https://textures.minecraft.net/texture/ded4781df856279522d844252eca79a6cc6f24a9baa89d293d829053fd9c9c"
     # Lower number is more performant, but the picture will take longer to render
-    tracesPerTick: 256
+    tracesPerTick: 64
+    renderDistance: 128
   messages:
     notready: '&cCameras is still loading, please wait.'
     invfull: '&cYou cannot take a picture with a full inventory.'

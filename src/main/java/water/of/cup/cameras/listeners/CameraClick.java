@@ -19,42 +19,41 @@ public class CameraClick implements Listener {
     @EventHandler
     public void cameraClicked(PlayerInteractEvent e) {
 
-        if (e.getItem() == null)
+        if (!Utils.isCamera(e.getItem()))
             return;
 
-        if (e.getItem().getItemMeta() == null)
+        e.setCancelled(true);
+
+        if (!e.getAction().equals(Action.RIGHT_CLICK_AIR))
             return;
 
-        if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK))
-                && Utils.isCamera(e.getItem())) {
+        Player p = e.getPlayer();
+        Camera instance = Camera.getInstance();
 
-            Player p = e.getPlayer();
-            Camera instance = Camera.getInstance();
+        boolean messages = instance.getConfig().getBoolean("settings.messages.enabled");
+        boolean usePerms = instance.getConfig().getBoolean("settings.camera.permissions");
 
-            boolean messages = instance.getConfig().getBoolean("settings.messages.enabled");
-            boolean usePerms = instance.getConfig().getBoolean("settings.camera.permissions");
-
-            // check to make sure the player has paper
-            if ((usePerms && p.hasPermission("cameras.paperRequired") && !p.getInventory().contains(Material.PAPER)) ||
-                    (!usePerms && !p.getInventory().contains(Material.PAPER))) {
-                if (messages) {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("settings.messages.nopaper")));
-                }
-                return;
+        // check to make sure the player has paper
+        if ((usePerms && p.hasPermission("cameras.paperRequired") && !p.getInventory().contains(Material.PAPER)) ||
+                (!usePerms && !p.getInventory().contains(Material.PAPER))) {
+            if (messages) {
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("settings.messages.nopaper")));
             }
+            return;
+        }
 
-            boolean tookPicture = Picture.takePicture(p);
+        boolean tookPicture = Picture.takePicture(p);
 
-            boolean isPaperRequired = !usePerms || p.hasPermission("cameras.paperRequired");
+        boolean isPaperRequired = !usePerms || p.hasPermission("cameras.paperRequired");
 
-            if (tookPicture && isPaperRequired) {
-                // remove 1 paper from the player's inventory
-                Map<Integer, ? extends ItemStack> paperHash = p.getInventory().all(Material.PAPER);
-                for (ItemStack item : paperHash.values()) {
-                    item.setAmount(item.getAmount() - 1);
-                    break;
-                }
+        if (tookPicture && isPaperRequired) {
+            // remove 1 paper from the player's inventory
+            Map<Integer, ? extends ItemStack> paperHash = p.getInventory().all(Material.PAPER);
+            for (ItemStack item : paperHash.values()) {
+                item.setAmount(item.getAmount() - 1);
+                break;
             }
         }
+
     }
 }
