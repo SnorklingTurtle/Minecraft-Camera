@@ -22,7 +22,7 @@ settings:
     tracesPerTick: 64
     renderDistance: 128
   messages:
-    notready: '&cCameras is still loading, please wait.'
+    notready: '&cCamera is still loading, please wait.'
     invfull: '&cYou cannot take a picture with a full inventory.'
     delay: '&cPlease wait before taking another picture.'
     nopaper: '&cYou must have paper in order to take a picture.'
