@@ -31,11 +31,10 @@ public class CameraClick implements Listener {
         Camera instance = Camera.getInstance();
 
         boolean messages = instance.getConfig().getBoolean("settings.messages.enabled");
-        boolean usePerms = instance.getConfig().getBoolean("settings.camera.permissions");
+        boolean isOp = p.isOp();
 
         // check to make sure the player has paper
-        if ((usePerms && p.hasPermission("cameras.paperRequired") && !p.getInventory().contains(Material.PAPER)) ||
-                (!usePerms && !p.getInventory().contains(Material.PAPER))) {
+        if (!p.getInventory().contains(Material.PAPER) && !isOp) {
             if (messages) {
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("settings.messages.nopaper")));
             }
@@ -44,9 +43,7 @@ public class CameraClick implements Listener {
 
         boolean tookPicture = Picture.takePicture(p);
 
-        boolean isPaperRequired = !usePerms || p.hasPermission("cameras.paperRequired");
-
-        if (tookPicture && isPaperRequired) {
+        if (tookPicture && !isOp) {
             // remove 1 paper from the player's inventory
             Map<Integer, ? extends ItemStack> paperHash = p.getInventory().all(Material.PAPER);
             for (ItemStack item : paperHash.values()) {

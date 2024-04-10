@@ -16,9 +16,6 @@ public class CameraCommands implements CommandExecutor {
         if (!cmd.getName().equalsIgnoreCase("takepicture"))
             return false;
 
-        if (!instance.getConfig().getBoolean("settings.camera.permissions"))
-            return false;
-
         if (!(sender instanceof Player)) {
             return false;
         }

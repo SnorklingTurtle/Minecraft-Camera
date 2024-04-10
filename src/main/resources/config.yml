@@ -1,7 +1,5 @@
 settings:
   camera:
-    # Whether to control permissions using Bukkit permissions.yml (cameras.craft, cameras.useitem cameras.command, cameras.paperRequired)
-    permissions: true
     recipe:
       ingredients:
         I: IRON_INGOT

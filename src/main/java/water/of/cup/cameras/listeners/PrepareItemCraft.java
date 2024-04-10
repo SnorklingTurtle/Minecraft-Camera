@@ -13,20 +13,16 @@ import org.bukkit.inventory.Recipe;
 
 public class PrepareItemCraft implements Listener {
 
-    private Camera instance = Camera.getInstance();
-
     @EventHandler
     public void prepareItemCraft(PrepareItemCraftEvent event) {
         Recipe recipe = event.getRecipe();
         if (recipe == null) return;
 
         if (Utils.isCamera(recipe.getResult())) {
-            if (instance.getConfig().getBoolean("settings.camera.permissions")) {
-                for (HumanEntity he : event.getViewers()) {
-                    if (he instanceof Player) {
-                        if (!he.hasPermission("cameras.craft")) {
-                            event.getInventory().setResult(new ItemStack(Material.AIR));
-                        }
+            for (HumanEntity he : event.getViewers()) {
+                if (he instanceof Player) {
+                    if (!he.hasPermission("cameras.craft")) {
+                        event.getInventory().setResult(new ItemStack(Material.AIR));
                     }
                 }
             }

@@ -20,8 +20,7 @@ public class Picture {
 
         boolean messages = instance.getConfig().getBoolean("settings.messages.enabled");
 
-        boolean usePerms = instance.getConfig().getBoolean("settings.camera.permissions");
-        if (usePerms && !p.hasPermission("cameras.useitem")) return false;
+        if (!p.hasPermission("cameras.useitem")) return false;
 
         if (p.getInventory().firstEmpty() == -1) { //check to make sure there is room in the inventory for the map
             if (messages) {

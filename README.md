@@ -38,9 +38,6 @@ cameras.useitem:
 cameras.command:
   description: Allow the command /takepicture
   default: false
-cameras.paperRequired:
-  description: Require paper to take a picture
-  default: true
 ```
 
 
@@ -57,9 +54,11 @@ cameras.paperRequired:
 
 ## Todo
 * [QA] Test with Geyser
+* [QA] See permissions works as intended
 * [Optimize] Can converting colors from string be improved
 * [Optimize] See if loading maps at boot can be improved (async? sqlite?)
 * [Optimize] See if it's possible to remove despawned images from the `maps` folder
+* [Feature] Let sky color depend on time of day
 * [Feature] Add option to place camera on the ground (might conflict with claims plugin).
 
 ## Done
