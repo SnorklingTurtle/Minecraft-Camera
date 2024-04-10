@@ -9,8 +9,6 @@ import org.bukkit.entity.Player;
 
 public class CameraCommands implements CommandExecutor {
 
-    private Camera instance = Camera.getInstance();
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (!cmd.getName().equalsIgnoreCase("takepicture"))
