@@ -53,7 +53,6 @@ cameras.command:
 * Image are distorted when looking up/down.
 
 ## Todo
-* [Bug] When shooting multiple times, subsequent pictures will stop rendering when the first one finishes
 * [QA] Test with Geyser
 * [QA] See if permissions works as intended
 * [Optimize] Can converting colors from string be improved
@@ -63,6 +62,7 @@ cameras.command:
 
 ## Done
 
+* [Bug] When shooting multiple times, subsequent pictures will stop rendering when the first one finishes
 * [Feature] Let sky color depend on time of day
 * [Optimize] Set default render distance to 128 (instead of 256)
 * [Feature] Allow changing render distance from config
