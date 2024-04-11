@@ -32,6 +32,13 @@ public class Renderer extends MapRenderer {
     MapCanvas canvas;
     MapView map;
 
+    // Overworld sky colors
+    private static final Color[] skyColors = {
+            new Color(131, 151, 166),   // Morning
+            new Color(113, 156, 237),   // Noon
+            new Color(87, 61, 102),     // Night
+            new Color(45, 56, 74),      // Midnight
+    };
 
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
@@ -178,10 +185,34 @@ public class Renderer extends MapRenderer {
     }
 
     private Color getSkyColor(World world) {
-        if (world == null) return new Color(113, 156, 237);
+        Color dayColor = skyColors[1];
+        if (world == null) return dayColor;
         if (world.getName().contains("end")) return new Color(36, 20, 61);
         if (world.getName().contains("nether")) return new Color(44, 7, 7);
-        return new Color(113, 156, 237);
+
+        long time = world.getTime();
+        return interpolateColor((int)time);
+    }
+
+    public static Color interpolateColor(int value) {
+        value = Math.min(Math.max(value, 0), 24000);
+
+        // Determine the index of the first color
+        int index = (int) ((double) value / 6000);
+
+        // Calculate the fractional part of the value within the range of each color segment
+        double fraction = (double) (value % 6000) / 6000;
+
+        // Determine the two colors to interpolate between
+        Color color1 = skyColors[index];
+        Color color2 = skyColors[(index + 1) % skyColors.length];
+
+        // Perform linear interpolation between the two colors
+        int red = (int) (color1.getRed() + fraction * (color2.getRed() - color1.getRed()));
+        int green = (int) (color1.getGreen() + fraction * (color2.getGreen() - color1.getGreen()));
+        int blue = (int) (color1.getBlue() + fraction * (color2.getBlue() - color1.getBlue()));
+
+        return new Color(red, green, blue);
     }
 
 }
