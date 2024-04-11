@@ -23,24 +23,6 @@ Players can craft cameras using the following recipe:
 Operators on the server (`/op <username>`) can take pictures with the command `/takepicture`. When using this command a camera and paper is 
 not required, however you still need space in your inventory.
 
-### Permissions
-
-If `permissions` is se to `true` in config.yml, you can use the following in permissions.yml:
-
-```
-# permissions.yml
-cameras.craft:
-  description: Allow crafting camera
-  default: true
-cameras.useitem:
-  description: Allow using the camera
-  default: false
-cameras.command:
-  description: Allow the command /takepicture
-  default: false
-```
-
-
 ## Pictures
 
 <img src="https://i.imgur.com/Bzi99fL.png" width="128">
@@ -55,8 +37,9 @@ cameras.command:
 ## Todo
 * [QA] Test with Geyser
 * [QA] See if permissions works as intended
+* [Bug] Water seems to be transparent even with `transparentWater: false`
 * [Optimize] Can converting colors from string be improved
-* [Optimize] See if loading maps at boot can be improved (async? sqlite?)
+* [Optimize] See if loading maps at boot can be improved
 * [Optimize] See if it's possible to remove despawned images from the `maps` folder
 * [Feature] Add option to place camera on the ground (might conflict with claims plugin).
 
