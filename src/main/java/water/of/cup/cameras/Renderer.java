@@ -46,6 +46,8 @@ public class Renderer extends MapRenderer {
             return;
         }
 
+        Picture.setBusy(true);
+
         map.setLocked(true);
 
         this.canvas = canvas;
@@ -79,6 +81,8 @@ public class Renderer extends MapRenderer {
         // Save map to file
         Bukkit.getScheduler().runTaskAsynchronously(instance,
             () -> MapStorage.store(map.getId(), canvasBytes));
+
+        Picture.setBusy(false);
     }
 
     private void renderMapSection(Callback onComplete) {

@@ -206,8 +206,6 @@ public class Camera extends JavaPlugin {
         defaultConfig.put("settings.messages.invfull", "&cYou cannot take a picture with a full inventory.");
         defaultConfig.put("settings.messages.nopaper", "&cYou must have paper in order to take a picture.");
         defaultConfig.put("settings.messages.enabled", true);
-        defaultConfig.put("settings.delay.amount", 1000);
-        defaultConfig.put("settings.delay.enabled", true);
         defaultConfig.put("settings.camera.transparentWater", false);
         defaultConfig.put("settings.camera.skinUrl", "https://textures.minecraft.net/texture/ded4781df856279522d844252eca79a6cc6f24a9baa89d293d829053fd9c9c");
         defaultConfig.put("settings.camera.shadows", true);

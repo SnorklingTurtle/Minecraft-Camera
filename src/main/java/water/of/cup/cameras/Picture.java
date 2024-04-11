@@ -15,12 +15,22 @@ import java.util.HashMap;
 public class Picture {
     private static HashMap<Player, Long> delayMap = new HashMap<>();
 
+    private static boolean isBusy = false;
+
     public static boolean takePicture(Player p) {
+
         Camera instance = Camera.getInstance();
 
         boolean messages = instance.getConfig().getBoolean("settings.messages.enabled");
 
         if (!p.hasPermission("cameras.useitem")) return false;
+
+        if (isBusy) {
+            if (messages) {
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("settings.messages.delay")));
+            }
+            return false;
+        }
 
         if (p.getInventory().firstEmpty() == -1) { //check to make sure there is room in the inventory for the map
             if (messages) {
@@ -29,23 +39,7 @@ public class Picture {
             return false;
         }
 
-        if (instance.getColorMapping().isLoaded()) {
-            if (instance.getConfig().getBoolean("settings.delay.enabled")) {
-                if (!delayMap.containsKey(p)) {
-                    delayMap.put(p, System.currentTimeMillis());
-                } else {
-                    int delay = instance.getConfig().getInt("settings.delay.amount");
-                    if (System.currentTimeMillis() - delayMap.get(p) >= delay) {
-                        delayMap.put(p, System.currentTimeMillis());
-                    } else {
-                        if (messages) {
-                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("settings.messages.delay")));
-                        }
-                        return false;
-                    }
-                }
-            }
-        } else {
+        if (!instance.getColorMapping().isLoaded()) {
             if (messages) {
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("settings.messages.notready")));
             }
@@ -72,6 +66,10 @@ public class Picture {
         p.playSound(p.getLocation(), Sound.BLOCK_PISTON_EXTEND, 0.5F, 2.0F);
 
         return true;
+    }
+
+    public static void setBusy(boolean isBusy) {
+        Picture.isBusy = isBusy;
     }
 
 }
