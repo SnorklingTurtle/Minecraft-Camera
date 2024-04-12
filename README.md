@@ -10,7 +10,7 @@ This version contains 2 major performance improvements:
 * Rendering is distributed across ticks. Amount of calculations per tick can be adjusted in `config.yml`. Previously 
 rendering would make the main thread hang, and the whole server would lag. 
 * The color palette is now loaded from a config file. Previously a zipped file containing block textures was downloaded,
-unzipped - and then 1 pixel for each image was read to determine the color. A very slow process.
+unzipped - then 1 pixel from each texture was picked determine the color. A very slow process.
 
 Other improvements:
 
