@@ -23,9 +23,7 @@ Other improvements:
 
 ## Pictures
 
-<img src="https://i.imgur.com/Bzi99fL.png" width="225">
-<img src="https://i.imgur.com/YRiBxGn.png" width="225">
-<img src="https://i.imgur.com/pstXzfc.png" width="225">
+<img src="https://i.imgur.com/Bzi99fL.png" width="225"> <img src="https://i.imgur.com/YRiBxGn.png" width="225"> <img src="https://i.imgur.com/pstXzfc.png" width="225">
 
 ## Installation
 
