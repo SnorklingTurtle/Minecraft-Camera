@@ -5,6 +5,28 @@ Minecraft Camera plugin for Spigot. Adds craft-able cameras to your Minecraft se
 
 This is an updated version of the [Cameras plugin by Cup0fCode](https://github.com/Cup0fCode/Cameras/). Tested on Minecraft 1.20.4.
 
+This version contains 2 major performance improvements:
+
+* Rendering is distributed across ticks. Amount of calculations per tick can be adjusted in `config.yml`. Previously 
+rendering would make the main thread hang, and the whole server would lag. 
+* The color palette is now loaded from a config file. Previously a zipped file containing block textures was downloaded,
+unzipped - and then 1 pixel for each image was read to determine the color. A very slow process.
+
+Other improvements:
+
+* Sky color changes in Overworld depending on the time of day.
+* Render distance can be adjusted through the config.
+* Camera skin can be changed through the config.
+* Updated colors for newer blocks.
+* Upgraded Spigot API to 1.20.4.
+* All logging is prefixed with `[Camera]`.
+
+## Pictures
+
+<img src="https://i.imgur.com/Bzi99fL.png" width="225">
+<img src="https://i.imgur.com/YRiBxGn.png" width="225">
+<img src="https://i.imgur.com/pstXzfc.png" width="225">
+
 ## Installation
 
 1. [Download the plugin](https://github.com/SnorklingTurtle/Minecraft-Camera/releases/)
@@ -15,6 +37,26 @@ If you don't already have a config file, one will be created on first boot of th
 
 Images are saved as txt-files in `plugins/Minecraft-Camera/maps`. Each file is usually at a size of 3-12 KB.
 
+## Permissions
+
+To allow players to craft and use the camera you must set permissions for at least `cameras.craft` and 
+`cameras.useitem` and optionally `cameras.command`. You can either set the permissions in 
+permissions.yml or through LuckPerms. Other permissions plugins might work as well, but haven't been tested.
+
+Here's an example for permissions.yml:
+
+```yml
+cameras.craft:
+  description: Allow crafting camera
+  default: true
+cameras.useitem:
+  description: Allow using the camera
+  default: false
+cameras.command:
+  description: Allow the command /takepicture
+  default: op
+```
+
 ## Usage
 Players can craft cameras using the following recipe:
 
@@ -23,24 +65,19 @@ Players can craft cameras using the following recipe:
 Operators on the server (`/op <username>`) can take pictures with the command `/takepicture`. When using this command a camera and paper is 
 not required, however you still need space in your inventory.
 
-## Pictures
-
-<img src="https://i.imgur.com/Bzi99fL.png" width="128">
-<img src="https://i.imgur.com/YRiBxGn.png" width="128">
-<img src="https://i.imgur.com/pstXzfc.png" width="128">
-
 ## Limitations
+
 * Each surface displays just one color. If you see any colors that feels off, let me know.
 * Players and mobs won't show up on pictures - *X-Files theme plays*
 * Image are distorted when looking up/down.
 
 ## Todo
+
 * [QA] Test with Geyser
 * [QA] See if permissions works as intended
 * [Bug] Water seems to be transparent even with `transparentWater: false`
 * [Optimize] Can converting colors from string be improved
 * [Optimize] See if loading maps at boot can be improved
-* [Optimize] See if it's possible to remove despawned images from the `maps` folder
 * [Feature] Add option to place camera on the ground (might conflict with claims plugin).
 
 ## Done
@@ -54,7 +91,7 @@ not required, however you still need space in your inventory.
 * [Optimize] Prefix all console logging with `[Camera]`
 * [Optimize] Render X amount of pixels per tick, for better performance
 * [Bug] It's possible to take pictures with a full inventory using `/takepicture`
-* [QA] Make paper requirement optional in the config
+* [Optimize] ~~See if it's possible to remove despawned images from the `maps` folder~~
 
 ## Issues
 
