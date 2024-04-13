@@ -79,7 +79,7 @@ public class Renderer extends MapRenderer {
 
         if (isDebugging)
             instance.getLogger().info("-- Render Begin ---");
-        
+
         // Schedule the task to run every tick (20 times per second)
         int tickRate = 1;
         task = new BukkitRunnable() {

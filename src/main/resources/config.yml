@@ -18,7 +18,11 @@ settings:
     skinUrl: "https://textures.minecraft.net/texture/ded4781df856279522d844252eca79a6cc6f24a9baa89d293d829053fd9c9c"
     # Lower number is more performant, but the picture will take longer to render
     tracesPerTick: 256
+    # Lower number is more performant
     renderDistance: 128
+    # Setting this to false will render the image from top to bottom instead
+    # of randomly. Rendering from top to bottom is slightly more performant,
+    # but the difference is insignificant.
     renderRandomly: true
   messages:
     notready: '&cCamera is still loading, please wait.'

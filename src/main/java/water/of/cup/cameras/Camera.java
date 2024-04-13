@@ -38,7 +38,6 @@ public class Camera extends JavaPlugin {
     private FileConfiguration config;
 
 
-
     @Override
     public void onEnable() {
         instance = this;
@@ -188,78 +187,31 @@ public class Camera extends JavaPlugin {
             getDataFolder().mkdir();
         }
 
-        configFile = new File(getDataFolder(), "config.yml");
-        if (!configFile.exists()) {
-            try {
-                configFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        config = YamlConfiguration.loadConfiguration(configFile);
-
-        HashMap<String, Object> defaultConfig = new HashMap<>();
-
-        defaultConfig.put("settings.messages.notready", "&cCamera is still loading, please wait.");
-        defaultConfig.put("settings.messages.delay", "&cPlease wait before taking another picture.");
-        defaultConfig.put("settings.messages.invfull", "&cYou cannot take a picture with a full inventory.");
-        defaultConfig.put("settings.messages.nopaper", "&cYou must have paper in order to take a picture.");
-        defaultConfig.put("settings.messages.enabled", true);
-        defaultConfig.put("settings.camera.transparentWater", false);
-        defaultConfig.put("settings.camera.skinUrl", "https://textures.minecraft.net/texture/ded4781df856279522d844252eca79a6cc6f24a9baa89d293d829053fd9c9c");
-        defaultConfig.put("settings.camera.shadows", true);
-        defaultConfig.put("settings.camera.renderDistance", 256);
-        defaultConfig.put("settings.camera.tracesPerTick", 128);
-        defaultConfig.put("settings.camera.renderRandomly", true);
-
-        HashMap<String, String> defaultRecipe = new HashMap<>();
-        defaultRecipe.put("I", Material.IRON_INGOT.toString());
-        defaultRecipe.put("G", Material.GLASS_PANE.toString());
-        defaultRecipe.put("T", Material.GLOWSTONE_DUST.toString());
-        defaultRecipe.put("R", Material.REDSTONE.toString());
-
-        defaultConfig.put("settings.camera.recipe.enabled", true);
-        defaultConfig.put("settings.camera.recipe.shape", new ArrayList<String>() {
-            {
-                add("IGI");
-                add("ITI");
-                add("IRI");
-            }
-        });
-
-
-        if (!config.contains("settings.camera.recipe.ingredients")) {
-            for (String key : defaultRecipe.keySet()) {
-                defaultConfig.put("settings.camera.recipe.ingredients." + key, defaultRecipe.get(key));
-            }
-        }
-
-        for (String key : defaultConfig.keySet()) {
-            if (!config.contains(key)) {
-                config.set(key, defaultConfig.get(key));
-            }
-        }
-
         File mapDir = new File(getDataFolder(), "maps");
         if (!mapDir.exists()) {
             mapDir.mkdir();
         }
 
-        this.saveConfig();
+        String filePath = "/config.yml";
+        boolean hasConfig = FileUtils.fileExists(filePath);
+
+        if (!hasConfig)
+        {
+            try {
+                FileUtils.copyResource(filePath, filePath);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        configFile = new File(getDataFolder(), "config.yml");
+        config = YamlConfiguration.loadConfiguration(configFile);
     }
 
     public  ColorMapping getColorMapping() {
         return this.colorMapping;
-    }
-
-    @Override
-    public void saveConfig() {
-        try {
-            config.save(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
