@@ -7,10 +7,15 @@ This is an updated version of the [Cameras plugin by Cup0fCode](https://github.c
 
 This version contains 2 major performance improvements:
 
-* Rendering is distributed across ticks. Amount of calculations per tick can be adjusted in `config.yml`. Previously 
-rendering would make the main thread hang, and the whole server would lag. 
-* The color palette is now loaded from a config file. Previously a zipped file containing block textures was downloaded,
-unzipped - then 1 pixel from each texture was picked determine the color. A very slow process.
+* **Initializing the plugin at server boot is much faster**
+  
+  The color palette is now loaded from a config file. Previously a zipped file containing textures for all block types was downloaded,
+  unzipped - then 1 pixel from each texture was picked determine the color.
+
+* **Taking pictures is much more performant** 
+
+  Rendering is new distributed across ticks. Previously rendering would make the main thread hang, and the whole server would lag. 
+
 
 Other improvements:
 
@@ -18,7 +23,6 @@ Other improvements:
 * Render distance can be adjusted through the config.
 * Camera skin can be changed through the config.
 * Updated colors for newer blocks.
-* Upgraded Spigot API to 1.20.4.
 * All logging is prefixed with `[Camera]`.
 
 ## Pictures
