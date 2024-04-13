@@ -211,6 +211,7 @@ public class Camera extends JavaPlugin {
         defaultConfig.put("settings.camera.shadows", true);
         defaultConfig.put("settings.camera.renderDistance", 256);
         defaultConfig.put("settings.camera.tracesPerTick", 128);
+        defaultConfig.put("settings.camera.renderRandomly", true);
 
         HashMap<String, String> defaultRecipe = new HashMap<>();
         defaultRecipe.put("I", Material.IRON_INGOT.toString());

@@ -33,7 +33,11 @@ public class Renderer extends MapRenderer {
     MapCanvas canvas;
     MapView map;
 
+    private int currentX = 0;
+    private int currentY = 0;
     BukkitTask task;
+    boolean isRenderingRandomly = true;
+    boolean isDebugging = false;
 
     // Overworld sky colors
     private static final Color[] skyColors = {
@@ -58,6 +62,7 @@ public class Renderer extends MapRenderer {
 
         eyes = player.getEyeLocation().clone();
 
+        isRenderingRandomly = instance.getConfig().getBoolean("settings.camera.renderRandomly");
         tracesPerTick = instance.getConfig().getInt("settings.camera.tracesPerTick");
         renderDistance = instance.getConfig().getInt("settings.camera.renderDistance");
         transparentWater = instance.getConfig().getBoolean("settings.camera.transparentWater");
@@ -69,12 +74,28 @@ public class Renderer extends MapRenderer {
 
         canvasBytes = new byte[128][128];
 
+        currentX = 0;
+        currentY = 0;
+
+        if (isDebugging)
+            instance.getLogger().info("-- Render Begin ---");
+        
         // Schedule the task to run every tick (20 times per second)
         int tickRate = 1;
         task = new BukkitRunnable() {
             @Override
             public void run() {
-                renderMapSection(() -> onRenderComplete());
+                long startTime = System.nanoTime();
+
+                if (isRenderingRandomly)
+                    renderMapSectionRandomly(() -> onRenderComplete());
+                else
+                    renderMapSectionSequentially(() -> onRenderComplete());
+
+                long endTime = System.nanoTime();
+                double duration = (endTime - startTime) * 1e-6;
+                if (isDebugging)
+                    instance.getLogger().info("Render Time (ms): " + duration);
             }
         }.runTaskTimer(instance, 0, tickRate);
     }
@@ -91,13 +112,12 @@ public class Renderer extends MapRenderer {
         Picture.setBusy(false);
     }
 
-    private void renderMapSection(Callback onComplete) {
+    private void renderMapSectionRandomly(Callback onComplete) {
 
         for (int i = 0; i < tracesPerTick; i++)
         {
             // Check if all coordinates have been picked
             if (pickedCoordinates.size() >= 128 * 128) {
-                Bukkit.getServer().getScheduler().cancelTasks(instance); // Stop the task
                 onComplete.execute();
                 return;
             }
@@ -112,6 +132,25 @@ public class Renderer extends MapRenderer {
 
             // Add the picked coordinate to the set
             pickedCoordinates.add(coordinate);
+        }
+    }
+
+    private void renderMapSectionSequentially(Callback onComplete) {
+        for (int i = 0; i < tracesPerTick; i++) {
+            // Check if all coordinates have been picked
+            if (currentX >= 128 || currentY >= 128) {
+                onComplete.execute();
+                return;
+            }
+
+            performRayTrace(currentX, currentY);
+
+            // Move to the next coordinate
+            currentX++;
+            if (currentX >= 128) {
+                currentX = 0;
+                currentY++;
+            }
         }
     }
 

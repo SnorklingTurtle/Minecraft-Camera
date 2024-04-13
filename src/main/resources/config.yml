@@ -19,6 +19,7 @@ settings:
     # Lower number is more performant, but the picture will take longer to render
     tracesPerTick: 256
     renderDistance: 128
+    renderRandomly: true
   messages:
     notready: '&cCamera is still loading, please wait.'
     invfull: '&cYou cannot take a picture with a full inventory.'
