@@ -7,22 +7,21 @@ This is an updated version of the [Cameras plugin by Cup0fCode](https://github.c
 
 This version contains 2 major performance improvements:
 
-* **Initializing the plugin at server boot is much faster**
-  
-  The color palette is now loaded from a config file. Previously a zipped file containing textures for all block types was downloaded,
-  unzipped - then 1 pixel from each texture was picked determine the color.
+* **Initializing the plugin at server boot is much faster**<br>
+The color palette is now loaded from a config file. Previously a zipped file containing textures for all block types was downloaded,
+unzipped - then 1 pixel from each texture was picked determine the color.
 
-* **Taking pictures is much more performant** 
-
-  Rendering is new distributed across ticks. Previously rendering would make the main thread hang, and the whole server would lag. 
+* **Taking pictures is much more performant**<br>
+Rendering is new distributed across ticks. Previously rendering would make the main thread hang, and the whole server would lag. 
 
 
 Other improvements:
 
-* Sky color changes in Overworld depending on the time of day.
+* In Overworld the sky color changes depending on the time of day.
+* Amount of rendered pixels per ticks can be adjusted through the config.
 * Render distance can be adjusted through the config.
 * Camera skin can be changed through the config.
-* Updated colors for newer blocks.
+* Updated colors for newer block types.
 * All logging is prefixed with `[Camera]`.
 
 ## Pictures
