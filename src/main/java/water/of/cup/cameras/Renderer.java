@@ -7,6 +7,7 @@ import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -31,6 +32,8 @@ public class Renderer extends MapRenderer {
     byte[][] canvasBytes;
     MapCanvas canvas;
     MapView map;
+
+    BukkitTask task;
 
     // Overworld sky colors
     private static final Color[] skyColors = {
@@ -68,7 +71,7 @@ public class Renderer extends MapRenderer {
 
         // Schedule the task to run every tick (20 times per second)
         int tickRate = 1;
-        new BukkitRunnable() {
+        task = new BukkitRunnable() {
             @Override
             public void run() {
                 renderMapSection(() -> onRenderComplete());
@@ -81,6 +84,9 @@ public class Renderer extends MapRenderer {
         // Save map to file
         Bukkit.getScheduler().runTaskAsynchronously(instance,
             () -> MapStorage.store(map.getId(), canvasBytes));
+
+        // Stop render task
+        task.cancel();
 
         Picture.setBusy(false);
     }
