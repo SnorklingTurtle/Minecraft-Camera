@@ -1,9 +1,10 @@
 Minecraft Camera
 ================
 
-Minecraft Camera plugin for Spigot. Adds craft-able cameras to your Minecraft server and the ability to take pictures. 
+Minecraft Camera plugin for Spigot. Adds craft-able cameras to your Minecraft server and the 
+ability to take pictures. Works with Geyser, though the camera looks like a Steve head.
 
-This is an updated version of the [Cameras plugin by Cup0fCode](https://github.com/Cup0fCode/Cameras/). Tested on Minecraft 1.20.4.
+This is an updated version of the [Cameras plugin by Cup0fCode](https://github.com/Cup0fCode/Cameras/). Tested on Minecraft 1.20.4. 
 
 This version contains 2 major performance improvements:
 
@@ -74,16 +75,18 @@ not required, however you still need space in your inventory.
 
 ## Todo
 
-* [QA] Test with Geyser
-* [QA] See if permissions works as intended
-* [Bug] Water seems to be transparent even with `transparentWater: false`
+* [Optimize] Incorrect colors
 * [Optimize] Can converting colors from string be improved
+* [Optimize] Water seems to be transparent even with `transparentWater: false`
 * [Optimize] See if loading maps at boot can be improved
-* [Feature] Add option to place camera on the ground (might conflict with claims plugin).
+* [Idea] Prettier sky
+* [Idea] Framing
+* [Idea] Copy to clipboard
 
 ## Done
 
 * [Bug] When shooting multiple times, subsequent pictures will stop rendering when the first one finishes
+* [QA] See if permissions works as intended
 * [Feature] Let sky color depend on time of day
 * [Optimize] Set default render distance to 128 (instead of 256)
 * [Feature] Allow changing render distance from config
@@ -93,6 +96,7 @@ not required, however you still need space in your inventory.
 * [Optimize] Render X amount of pixels per tick, for better performance
 * [Bug] It's possible to take pictures with a full inventory using `/takepicture`
 * [Optimize] ~~See if it's possible to remove despawned images from the `maps` folder~~
+* [Feature] ~~Add option to place camera on the ground (might conflict with claims plugin).~~
 
 ## Issues
 
