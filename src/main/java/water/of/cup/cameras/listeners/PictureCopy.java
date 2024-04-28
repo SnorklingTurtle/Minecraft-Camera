@@ -1,6 +1,7 @@
 package main.java.water.of.cup.cameras.listeners;
 
 import main.java.water.of.cup.cameras.Camera;
+import main.java.water.of.cup.cameras.MapStorageDB;
 import main.java.water.of.cup.cameras.Picture;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -42,8 +43,11 @@ public class PictureCopy implements Listener {
         if (!Picture.isPicture(outItem))
             return;
 
-        Bukkit.getLogger().info("Copy photo: " + e.getCurrentItem().getType().name());
-    }
+        Integer mapId = Picture.getMapId(outItem);
+        if (mapId == null)
+            return;
 
+        MapStorageDB.updateCounter(instance.getDbConnection(), mapId, true);
+    }
 
 }

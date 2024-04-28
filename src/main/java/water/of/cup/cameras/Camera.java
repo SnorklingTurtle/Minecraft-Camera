@@ -53,6 +53,7 @@ public class Camera extends JavaPlugin {
 
         dbConnection = MapStorageDB.connect();
         MapStorageDB.createTable(dbConnection);
+        MapStorageDB.createCleanUpTrigger(dbConnection);
 
 
         if (config.getBoolean("settings.migrate"))

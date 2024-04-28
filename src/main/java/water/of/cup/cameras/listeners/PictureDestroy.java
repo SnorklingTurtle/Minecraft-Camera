@@ -1,6 +1,7 @@
 package main.java.water.of.cup.cameras.listeners;
 
 import main.java.water.of.cup.cameras.Camera;
+import main.java.water.of.cup.cameras.MapStorageDB;
 import main.java.water.of.cup.cameras.Picture;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -38,7 +39,7 @@ public class PictureDestroy implements Listener {
         if (mapId == null)
             return;
 
-        instance.getLogger().info("Picture despawned Id: " + mapId );
+        MapStorageDB.updateCounter(instance.getDbConnection(), mapId, false);
     }
 
     @EventHandler
@@ -67,7 +68,8 @@ public class PictureDestroy implements Listener {
                 if (mapId == null)
                     return;
 
-                instance.getLogger().info("Picture destroyed Id: " + mapId);
+                MapStorageDB.updateCounter(instance.getDbConnection(), mapId, false);
+
             }
         }.runTaskLater(instance, 1);
     }

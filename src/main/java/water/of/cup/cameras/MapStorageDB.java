@@ -59,9 +59,30 @@ public class MapStorageDB {
         }
     }
 
+    public static void createCleanUpTrigger(Connection conn) {
+        Camera instance = Camera.getInstance();
+        String query = String.format("CREATE TRIGGER IF NOT EXISTS picture_cleanup\n" +
+                "   AFTER UPDATE\n" +
+                "   ON pictures\n" +
+                "   WHEN NEW.counter <= 0\n" +
+                " BEGIN\n" +
+                "   DELETE FROM %s WHERE map_id=NEW.map_id;\n" +
+                " END;\n", MapStorageDB.tableName);
+
+        try
+        {
+            Statement statement = conn.createStatement();
+            statement.execute(query);
+        }
+        catch (SQLException e)
+        {
+            instance.getLogger().info(e.getMessage());
+        }
+    }
+
     public static void store(Connection conn, int id, byte[][] data) {
         Camera instance = Camera.getInstance();
-        String query = String.format("INSERT INTO %s (map_id, data, created) VALUES(?,?,?)", MapStorageDB.tableName);
+        String query = String.format("INSERT INTO %s (map_id, data, created) VALUES(?,?,?);", MapStorageDB.tableName);
 
         try
         {
@@ -81,7 +102,7 @@ public class MapStorageDB {
 
     public static ResultSet getAll(Connection conn) {
         Camera instance = Camera.getInstance();
-        String query = String.format("SELECT * FROM %s", MapStorageDB.tableName);
+        String query = String.format("SELECT map_id,data FROM %s;", MapStorageDB.tableName);
         ResultSet rs = null;
 
         try
@@ -97,9 +118,26 @@ public class MapStorageDB {
         return rs;
     }
 
+    public static void updateCounter(Connection conn, Integer map_id, boolean isAddition) {
+        Camera instance = Camera.getInstance();
+        String query = String.format("UPDATE %s SET counter=(counter+?) WHERE map_id=?;", MapStorageDB.tableName);
+
+        try
+        {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, isAddition ? 1 : -1);
+            statement.setInt(2, map_id);
+            statement.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            instance.getLogger().info(e.getMessage());
+        }
+    }
+
     public static ResultSet getById(Connection conn, Integer map_id) {
         Camera instance = Camera.getInstance();
-        String query = String.format("SELECT * FROM %s WHERE map_id = %s", MapStorageDB.tableName, map_id);
+        String query = String.format("SELECT map_id,data,tag FROM %s WHERE map_id = %s;", MapStorageDB.tableName, map_id);
         ResultSet rs = null;
 
         try
