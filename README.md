@@ -69,9 +69,9 @@ not required, however you still need space in your inventory.
 
 ## Limitations
 
-* Each surface displays just one color. If you see any colors that feels off, let me know.
+* Each block displays just one color.
 * Players and mobs won't show up on pictures - *X-Files theme plays*
-* Image are distorted when looking up/down.
+* Pictures are distorted when looking up/down.
 
 ## Todo
 

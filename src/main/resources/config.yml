@@ -30,3 +30,6 @@ settings:
     delay: '&cPlease wait before taking another picture.'
     nopaper: '&cYou must have paper in order to take a picture.'
     enabled: true
+  # Migrates all pictures stored in txt files, into the database at server boot. Set this to false when
+  # files has been migrated.
+  migrate: false

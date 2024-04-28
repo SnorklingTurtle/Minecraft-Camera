@@ -102,9 +102,9 @@ public class Renderer extends MapRenderer {
 
     private void onRenderComplete()
     {
-        // Save map to file
+        // Save to DB
         Bukkit.getScheduler().runTaskAsynchronously(instance,
-            () -> MapStorage.store(map.getId(), canvasBytes));
+            () -> MapStorageDB.store(instance.getDbConnection(), map.getId(), canvasBytes));
 
         // Stop render task
         task.cancel();

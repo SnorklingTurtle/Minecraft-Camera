@@ -1,13 +1,11 @@
 package main.java.water.of.cup.cameras;
 
-import org.bukkit.Bukkit;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class MapStorage {
+public class MapStorageFile {
 
     public static void store(int id, byte[][] data) {
         Camera instance = Camera.getInstance();

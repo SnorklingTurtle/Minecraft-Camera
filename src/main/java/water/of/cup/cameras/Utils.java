@@ -21,8 +21,9 @@ public class Utils {
         Camera instance = Camera.getInstance();
 
         Color color = instance.colorMapping.getColorFromType(block, dye);
-        if (color == null)
+        if (color == null) {
             return MapPalette.GRAY_2; // no color was found, use gray
+        }
 
         return MapPalette.matchColor(color);
     }
