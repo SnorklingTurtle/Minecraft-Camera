@@ -153,7 +153,7 @@ public class MapStorageDB {
         return rs;
     }
 
-    public static byte[] serializeByteArray2d(byte[][] array) {
+    public static byte[] serializeByteArray2d(byte[][] array, boolean useCompression) {
         int totalLength = 0;
         for (byte[] row : array) {
             totalLength += row.length;
@@ -164,7 +164,11 @@ public class MapStorageDB {
             System.arraycopy(row, 0, serializedArray, index, row.length);
             index += row.length;
         }
-        return ByteArrayCompression.compress(serializedArray);
+        return useCompression ? ByteArrayCompression.compress(serializedArray) : serializedArray;
+    }
+
+    public static byte[] serializeByteArray2d(byte[][] array) {
+        return serializeByteArray2d(array, true);
     }
 
     public static byte[][] deserializeByteArray2d(byte[] serializedCompressedArray) {

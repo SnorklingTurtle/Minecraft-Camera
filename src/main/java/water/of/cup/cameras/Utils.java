@@ -3,6 +3,7 @@ package main.java.water.of.cup.cameras;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapPalette;
 import org.bukkit.persistence.PersistentDataType;
@@ -33,5 +34,13 @@ public class Utils {
                 .has(Camera.getInstance().getCameraKey(), PersistentDataType.INTEGER);
     }
 
-
+    public static void removePaperFromInventory(Player player, int amount)
+    {
+        // remove 1 paper from the player's inventory
+        Map<Integer, ? extends ItemStack> paperHash = player.getInventory().all(Material.PAPER);
+        for (ItemStack item : paperHash.values()) {
+            item.setAmount(item.getAmount() - amount);
+            break;
+        }
+    }
 }

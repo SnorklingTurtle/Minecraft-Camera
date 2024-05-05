@@ -6,4 +6,9 @@ author: Nicholas Kopiwoda
 api-version: "1.20"
 commands:
   takepicture:
-    description: take a picture
+    description: Take a picture
+  copypicture:
+    description: Copy a picture to clipboard
+  fetchpicture:
+    description: Fetch a picture by it's ID
+    usage: /<command> [id]

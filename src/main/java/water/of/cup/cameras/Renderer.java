@@ -1,6 +1,7 @@
 package main.java.water.of.cup.cameras;
 
 import org.bukkit.*;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -41,10 +42,10 @@ public class Renderer extends MapRenderer {
 
     // Overworld sky colors
     private static final Color[] skyColors = {
-            new Color(131, 151, 166),   // Morning
-            new Color(113, 156, 237),   // Noon
-            new Color(87, 61, 102),     // Night
-            new Color(45, 56, 74),      // Midnight
+            new Color(113, 194, 237),  // Morning
+            new Color(52, 113, 227),   // Noon
+            new Color(101, 97, 207),   // Night
+            new Color(45, 56, 74),     // Midnight
     };
 
     @Override
@@ -212,12 +213,23 @@ public class Renderer extends MapRenderer {
                 }
             }
 
+            // TODO: Perhaps use getMapColor() instead
+            // Color blockColor = result.getHitBlock().getBlockData().getMapColor().asRGB();
+            // canvas.setPixelColor(x, y, new Color(blockColor));
+
+            if (result.getHitBlock().getBlockPower() > 0)
+            {
+                if (result.getHitBlock().getType().equals(Material.REDSTONE_LAMP))
+                    dye = new double[]{1.85, 1.85, 1.85};
+            }
+
             byte color;
             if (transparentWater) {
                 color = Utils.colorFromType(result.getHitBlock(), dye);
             } else {
                 color = Utils.colorFromType(liquidResult.getHitBlock(), dye);
             }
+
             canvas.setPixel(x, y, color);
             canvasBytes[x][y] = color;
         } else if (liquidResult != null) {

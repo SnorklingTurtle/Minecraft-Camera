@@ -74,6 +74,7 @@ public class Picture {
         itemStack.setItemMeta(mapMeta);
         p.getInventory().addItem(itemStack);
 
+        // Keep track of map IDs
         instance.getMapIDs().add(mapView.getId());
 
         // Play capture sound

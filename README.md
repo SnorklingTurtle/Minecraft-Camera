@@ -6,14 +6,17 @@ ability to take pictures. Works with Geyser, though the camera looks like a Stev
 
 This is an updated version of the [Cameras plugin by Cup0fCode](https://github.com/Cup0fCode/Cameras/). Tested on Minecraft 1.20.4. 
 
-This version contains 2 major performance improvements:
+This version contains 3 major performance improvements:
 
 * **Initializing the plugin at server boot is much faster**<br>
 The color palette is now loaded from a config file. Previously a zipped file containing textures for all block types was downloaded,
 unzipped - then 1 pixel from each texture was picked determine the color.
 
 * **Taking pictures is much more performant**<br>
-Rendering is new distributed across ticks. Previously rendering would make the main thread hang, and the whole server would lag. 
+Rendering is now distributed across ticks. Previously rendering would make the main thread hang, and the whole server would lag. 
+
+* **Pictures are compressed when stored**<br>
+Each picture is usually at a size of 0.5-3 KB (3-30 KB without compression).
 
 
 Other improvements:
@@ -21,7 +24,10 @@ Other improvements:
 * In Overworld the sky color changes depending on the time of day.
 * Amount of rendered pixels per ticks can be adjusted through the config.
 * Render distance can be adjusted through the config.
+* Allows players to copy a picture to clipboard.
+* Allows players to fetch a picture by its ID.
 * Camera skin can be changed through the config.
+* Pictures that has despawned or has been thrown into lava, will be removed from the database.
 * Updated colors for newer block types.
 * All logging is prefixed with `[Camera]`.
 
@@ -37,7 +43,7 @@ Other improvements:
 
 If you don't already have a config file, one will be created on first boot of the server. The config is located at `plugins/Minecraft-Camera/config.yml`. Restart the server after editing the config. 
 
-Images are saved as txt-files in `plugins/Minecraft-Camera/maps`. Each file is usually at a size of 3-12 KB.
+Pictures are stored in a SQLite database at `plugins/Minecraft-Camera/pictures.db`. 
 
 ## Permissions
 
@@ -64,8 +70,12 @@ Players can craft cameras using the following recipe:
 
 ![crafting](https://i.imgur.com/GsrxLPY.png)
 
-Operators on the server (`/op <username>`) can take pictures with the command `/takepicture`. When using this command a camera and paper is 
-not required, however you still need space in your inventory.
+### Commands
+
+* `/copypicture` - Lets you copy a picture to clipboard.
+* `/fetchpicture <id>` - Allows players to fetch a picture by its ID. This is intended for servers that resets the world every season, but still want to let players retrieve pictures from the last season. Paper is required.
+* `/takepicture` - Operators on the server (`/op <username>`) can take pictures using this command. Paper not required. Intended for testing only.
+
 
 ## Limitations
 

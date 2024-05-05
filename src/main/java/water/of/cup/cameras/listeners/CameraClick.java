@@ -45,11 +45,7 @@ public class CameraClick implements Listener {
 
         if (tookPicture && !isOp) {
             // remove 1 paper from the player's inventory
-            Map<Integer, ? extends ItemStack> paperHash = p.getInventory().all(Material.PAPER);
-            for (ItemStack item : paperHash.values()) {
-                item.setAmount(item.getAmount() - 1);
-                break;
-            }
+            Utils.removePaperFromInventory(p, 1);
         }
 
     }
