@@ -10,7 +10,7 @@ This version contains 3 major performance improvements:
 
 * **Initializing the plugin at server boot is much faster**<br>
 The color palette is now loaded from a config file. Previously a zipped file containing textures for all block types was downloaded,
-unzipped - then 1 pixel from each texture was picked determine the color.
+unzipped - then 1 pixel from each texture was picked to determine the color.
 
 * **Taking pictures is much more performant**<br>
 Rendering is now distributed across ticks. Previously rendering would make the main thread hang, and the whole server would lag. 
@@ -29,7 +29,7 @@ Other improvements:
 * Camera skin can be changed through the config.
 * Pictures that despawned or has been thrown into lava, will be removed from the database.
 * Updated colors for newer block types.
-* All logging is prefixed with `[Camera]`.
+* All logging is prefixed with `[Minecraft-Camera]`.
 
 ## Pictures
 
@@ -73,7 +73,7 @@ Players can craft cameras using the following recipe:
 ### Commands
 
 * `/tagpicture <tag>` - This is intended for servers that resets their world seed every season, but still want to let players retrieve pictures from the last season. 
-* `/fetchpicture <tag>` - Allows players to fetch a picture by its tag (see above). Paper is required.
+* `/fetchpicture <tag>` - Allows players to fetch a picture by its tag (see above). Paper is required, except for operators.
 * `/copypicture` - Lets you copy a picture to clipboard.
 * `/takepicture` - Operators on the server (`/op <username>`) can take pictures using this command. Paper not required. Intended for testing only.
 

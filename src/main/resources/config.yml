@@ -30,5 +30,6 @@ settings:
     delay: '&cPlease wait before taking another picture.'
     nopaper: '&cYou must have paper in order to take a picture.'
     cantfetch: '&cUnable to fetch picture.'
+    canttag: '&cUnable to tag picture. Hold it in your main hand and try again.'
     tagused: '&cTag already used. Trying something else.'
     enabled: true
