@@ -85,13 +85,13 @@ public class MapStorageDB {
         }
     }
 
-    public static void store(Connection conn, int id, long seed, byte[][] data, UUID photographer) {
-        store(conn, id, seed, data, photographer, null, null);
+    public static void store(Connection conn, int id, long seed, byte[][] data, UUID photographer, int counter) {
+        store(conn, id, seed, data, photographer, counter, null, null);
     }
 
-    public static void store(Connection conn, int id, long seed, byte[][] data, UUID photographer, String tag, UUID tagger) {
+    public static void store(Connection conn, int id, long seed, byte[][] data, UUID photographer, int counter, String tag, UUID tagger) {
         Camera instance = Camera.getInstance();
-        String query = String.format("INSERT INTO %s (map_id, seed, data, created, tag, tagger, photographer) VALUES(?,?,?,?,?,?,?);", MapStorageDB.tableName);
+        String query = String.format("INSERT INTO %s (map_id, seed, data, created, tag, tagger, photographer, counter) VALUES(?,?,?,?,?,?,?,?);", MapStorageDB.tableName);
 
         try
         {
@@ -103,6 +103,7 @@ public class MapStorageDB {
             statement.setString(5, tag);
             statement.setString(6, tagger != null ? tagger.toString() : null);
             statement.setString(7, photographer != null ? photographer.toString() : null);
+            statement.setInt(8, counter);
             statement.executeUpdate();
         }
         catch (SQLException e)

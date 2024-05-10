@@ -76,8 +76,14 @@ public class FetchPictureCommand implements CommandExecutor {
                 sourceSeed = rs.getLong("seed");
                 sourcePhotographer = rs.getString("photographer");
             }
+            else
+            {
+                Message.show(player, "settings.messages.cantfetch");
+                return false;
+            }
         } catch (SQLException e) {
             e.getStackTrace();
+            return false;
         }
 
         // Check whether map_id exist within this seed
@@ -128,7 +134,7 @@ public class FetchPictureCommand implements CommandExecutor {
             MapStorageDB.updateTag(instance.getDbConnection(), sourceMapId, sourceSeed, null, null);
 
             // Store new picture with old tag
-            MapStorageDB.store(instance.getDbConnection(), mapView.getId(), currentSeed, map, photographer, tag, tagger);
+            MapStorageDB.store(instance.getDbConnection(), mapView.getId(), currentSeed, map, photographer, 1, tag, tagger);
         }
 
         // Add lore

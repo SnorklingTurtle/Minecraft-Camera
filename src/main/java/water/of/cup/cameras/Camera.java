@@ -116,7 +116,8 @@ public class Camera extends JavaPlugin {
                                     }
                                 }
 
-                                MapStorageDB.store(dbConnection, mapId, seed, map, null);
+                                // Cant know for sure how many copies the player has made, so it's just 99 to be on the safe side.
+                                MapStorageDB.store(dbConnection, mapId, seed, map, null, 99);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

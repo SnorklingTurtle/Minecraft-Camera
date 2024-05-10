@@ -108,7 +108,7 @@ public class Renderer extends MapRenderer {
     {
         // Save to DB
         Bukkit.getScheduler().runTaskAsynchronously(instance,
-            () -> MapStorageDB.store(instance.getDbConnection(), map.getId(), world.getSeed(), canvasBytes, playerUUID));
+            () -> MapStorageDB.store(instance.getDbConnection(), map.getId(), world.getSeed(), canvasBytes, playerUUID, 1));
 
         // Stop render task
         task.cancel();
