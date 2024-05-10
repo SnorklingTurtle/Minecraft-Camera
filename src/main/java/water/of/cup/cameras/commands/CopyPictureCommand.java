@@ -3,17 +3,13 @@ package main.java.water.of.cup.cameras.commands;
 import main.java.water.of.cup.cameras.Camera;
 import main.java.water.of.cup.cameras.MapStorageDB;
 import main.java.water.of.cup.cameras.Picture;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
-import org.bukkit.map.MapView;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
@@ -24,7 +20,6 @@ import java.sql.SQLException;
 
 public class CopyPictureCommand implements CommandExecutor {
 
-    MapRenderer renderer;
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (!cmd.getName().equalsIgnoreCase("copypicture"))
@@ -44,41 +39,7 @@ public class CopyPictureCommand implements CommandExecutor {
         if (mapId == null)
             return false;
 
-
-//        MapView mapView = Bukkit.getMap(mapId);
-//        if (mapView == null)
-//            return false;
-//
-//        renderer = new MapRenderer() {
-//            @Override
-//            public void render(MapView mapViewNew, MapCanvas mapCanvas, Player player) {
-//                if (mapViewNew.getId() != mapId)
-//                    return;
-//
-//                BufferedImage bufferedImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
-//                Graphics graphics = bufferedImage.getGraphics();
-//
-//                for (int y = 0; y < 128; y++) {
-//                    for (int x = 0; x < 128; x++) {
-//                        Color color = mapCanvas.getPixelColor(x, y);
-//                        graphics.setColor(color);
-//                        graphics.fillRect(x, y, 1, 1);
-//                    }
-//                }
-//
-//                BufferedImage image = getScaledImage(bufferedImage, 512, 512);
-//                Toolkit toolkit = Toolkit.getDefaultToolkit();
-//                Clipboard clipboard = toolkit.getSystemClipboard();
-//                clipboard.setContents(new ImageTransferable(image), null);
-//
-//                mapView.removeRenderer(renderer);
-//            }
-//        };
-//        mapView.addRenderer(renderer);
-
-
-
-        ResultSet rs = MapStorageDB.getById(Camera.getInstance().getDbConnection(), mapId);
+        ResultSet rs = MapStorageDB.getById(Camera.getInstance().getDbConnection(), mapId, p.getWorld().getSeed());
 
         byte[] mapDataSerialized = null;
         try {
@@ -144,14 +105,14 @@ public class CopyPictureCommand implements CommandExecutor {
             return DataFlavor.imageFlavor.equals(flavor);
         }
 
-        public Object getTransferData(final DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+        public Object getTransferData(final DataFlavor flavor) throws UnsupportedFlavorException {
             if (isDataFlavorSupported(flavor)) {
                 return image;
             }
 
             throw new UnsupportedFlavorException(flavor);
         }
-    };
+    }
 }
 
 

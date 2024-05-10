@@ -2,6 +2,7 @@ package main.java.water.of.cup.cameras;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class MapStorageDB {
 
@@ -39,19 +40,23 @@ public class MapStorageDB {
     public static void createTable(Connection conn) {
         Camera instance = Camera.getInstance();
         String query = String.format( "CREATE TABLE IF NOT EXISTS %s (\n"
-                + " id          INTEGER         PRIMARY KEY,\n"
-                + " map_id      INTEGER         NOT NULL,\n"
-                + " counter     INTEGER         DEFAULT 1,\n"
-                + " data        BLOB            NOT NULL,\n"
-                + " tag         TEXT            DEFAULT '',\n"
-                + " created     INTEGER         NOT NULL,\n"
-                + " UNIQUE(map_id)\n"
+                + " id              INTEGER         PRIMARY KEY,\n"
+                + " map_id          INTEGER         NOT NULL,\n"
+                + " seed            INTEGER         NOT NULL,\n"
+                + " counter         INTEGER         DEFAULT 1,\n"
+                + " data            BLOB            NOT NULL,\n"
+                + " photographer    TEXT,\n"
+                + " tag             TEXT,\n"
+                + " tagger          TEXT,\n"
+                + " created         INTEGER         NOT NULL,\n"
+                + " UNIQUE(map_id, seed) ON CONFLICT IGNORE,\n"
+                + " UNIQUE(tag) ON CONFLICT IGNORE\n"
                 + ");", MapStorageDB.tableName);
 
         try
         {
-            Statement statement = conn.createStatement();
-            statement.execute(query);
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.execute();
         }
         catch (SQLException e)
         {
@@ -66,13 +71,13 @@ public class MapStorageDB {
                 "   ON pictures\n" +
                 "   WHEN NEW.counter <= 0\n" +
                 " BEGIN\n" +
-                "   DELETE FROM %s WHERE map_id=NEW.map_id;\n" +
+                "   DELETE FROM %s WHERE id=NEW.id;\n" +
                 " END;\n", MapStorageDB.tableName);
 
         try
         {
-            Statement statement = conn.createStatement();
-            statement.execute(query);
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.execute();
         }
         catch (SQLException e)
         {
@@ -80,16 +85,24 @@ public class MapStorageDB {
         }
     }
 
-    public static void store(Connection conn, int id, byte[][] data) {
+    public static void store(Connection conn, int id, long seed, byte[][] data, UUID photographer) {
+        store(conn, id, seed, data, photographer, null, null);
+    }
+
+    public static void store(Connection conn, int id, long seed, byte[][] data, UUID photographer, String tag, UUID tagger) {
         Camera instance = Camera.getInstance();
-        String query = String.format("INSERT INTO %s (map_id, data, created) VALUES(?,?,?);", MapStorageDB.tableName);
+        String query = String.format("INSERT INTO %s (map_id, seed, data, created, tag, tagger, photographer) VALUES(?,?,?,?,?,?,?);", MapStorageDB.tableName);
 
         try
         {
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setInt(1, id);
-            statement.setBytes(2, serializeByteArray2d(data));
-            statement.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+            statement.setLong(2, seed);
+            statement.setBytes(3, serializeByteArray2d(data));
+            statement.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+            statement.setString(5, tag);
+            statement.setString(6, tagger != null ? tagger.toString() : null);
+            statement.setString(7, photographer != null ? photographer.toString() : null);
             statement.executeUpdate();
         }
         catch (SQLException e)
@@ -100,15 +113,16 @@ public class MapStorageDB {
         }
     }
 
-    public static ResultSet getAll(Connection conn) {
+    public static ResultSet getBySeed(Connection conn, long seed) {
         Camera instance = Camera.getInstance();
-        String query = String.format("SELECT map_id,data FROM %s;", MapStorageDB.tableName);
+        String query = String.format("SELECT map_id,data FROM %s WHERE seed=?;", MapStorageDB.tableName);
         ResultSet rs = null;
 
         try
         {
-            Statement statement = conn.createStatement();
-            rs = statement.executeQuery(query);
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setLong(1, seed);
+            rs = statement.executeQuery();
         }
         catch (SQLException e)
         {
@@ -118,15 +132,16 @@ public class MapStorageDB {
         return rs;
     }
 
-    public static void updateCounter(Connection conn, Integer map_id, boolean isAddition) {
+    public static void updateCounter(Connection conn, Integer map_id, long world_seed, boolean isAddition) {
         Camera instance = Camera.getInstance();
-        String query = String.format("UPDATE %s SET counter=(counter+?) WHERE map_id=?;", MapStorageDB.tableName);
+        String query = String.format("UPDATE %s SET counter=(counter+?) WHERE map_id=? AND seed=?;", MapStorageDB.tableName);
 
         try
         {
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setInt(1, isAddition ? 1 : -1);
             statement.setInt(2, map_id);
+            statement.setLong(3, world_seed);
             statement.executeUpdate();
         }
         catch (SQLException e)
@@ -135,15 +150,76 @@ public class MapStorageDB {
         }
     }
 
-    public static ResultSet getById(Connection conn, Integer map_id) {
+    public static boolean updateTag(Connection conn, Integer map_id, long world_seed, String tag, UUID taggerUUID) {
         Camera instance = Camera.getInstance();
-        String query = String.format("SELECT map_id,data,tag FROM %s WHERE map_id = %s;", MapStorageDB.tableName, map_id);
+        String query = String.format("UPDATE %s SET tag=?, tagger=? WHERE map_id=? AND seed=?;", MapStorageDB.tableName);
+
+        try
+        {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, tag != null ? tag.toLowerCase() : null);
+            statement.setString(2, taggerUUID != null ? taggerUUID.toString() : null);
+            statement.setInt(3, map_id);
+            statement.setLong(4, world_seed);
+            return statement.executeUpdate() > 0;
+        }
+        catch (SQLException e)
+        {
+            instance.getLogger().info(e.getMessage());
+        }
+        return false;
+    }
+
+    public static ResultSet getById(Connection conn, Integer map_id, long world_seed) {
+        Camera instance = Camera.getInstance();
+        String query = String.format("SELECT map_id,data,tag FROM %s WHERE map_id=? AND seed=? LIMIT 1;", MapStorageDB.tableName);
         ResultSet rs = null;
 
         try
         {
-            Statement statement = conn.createStatement();
-            rs = statement.executeQuery(query);
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, map_id);
+            statement.setLong(2, world_seed);
+            rs = statement.executeQuery();
+        }
+        catch (SQLException e)
+        {
+            instance.getLogger().info(e.getMessage());
+        }
+
+        return rs;
+    }
+
+    public static ResultSet getByTag(Connection conn, String tag) {
+        Camera instance = Camera.getInstance();
+        String query = String.format("SELECT map_id,data,tag,seed,photographer FROM %s WHERE tag=? LIMIT 1;", MapStorageDB.tableName);
+        ResultSet rs = null;
+
+        try
+        {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, tag.toLowerCase());
+            rs = statement.executeQuery();
+        }
+        catch (SQLException e)
+        {
+            instance.getLogger().info(e.getMessage());
+        }
+
+        return rs;
+    }
+
+    public static ResultSet getTagsByPlayer(Connection conn, UUID playerUUID, int amount) {
+        Camera instance = Camera.getInstance();
+        String query = String.format("SELECT tag FROM %s WHERE tagger=? ORDER BY RANDOM() LIMIT ?;", MapStorageDB.tableName);
+        ResultSet rs = null;
+
+        try
+        {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, playerUUID.toString());
+            statement.setInt(2, amount);
+            rs = statement.executeQuery();
         }
         catch (SQLException e)
         {

@@ -2,9 +2,11 @@ package main.java.water.of.cup.cameras;
 
 import main.java.water.of.cup.cameras.commands.CopyPictureCommand;
 import main.java.water.of.cup.cameras.commands.FetchPictureCommand;
+import main.java.water.of.cup.cameras.commands.TagPictureCommand;
 import main.java.water.of.cup.cameras.commands.TakePictureCommand;
 import main.java.water.of.cup.cameras.listeners.*;
 import main.java.water.of.cup.cameras.tabCompleter.FetchPictureTabCompleter;
+import main.java.water.of.cup.cameras.tabCompleter.TagPictureTabCompleter;
 import org.bukkit.*;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,9 +29,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.*;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class Camera extends JavaPlugin {
 
@@ -37,6 +41,7 @@ public class Camera extends JavaPlugin {
     private NamespacedKey recipeKey;
     private static Camera instance;
     List<Integer> mapIDs = new ArrayList<>();
+    List<Integer> mapIDs_OLD = new ArrayList<>();
     ColorMapping colorMapping = new ColorMapping();
     private FileConfiguration config;
     Connection dbConnection;
@@ -52,10 +57,79 @@ public class Camera extends JavaPlugin {
         loadConfig();
         this.colorMapping.initialize();
 
+        long seed = Bukkit.getWorlds().get(0).getSeed();
+
         dbConnection = MapStorageDB.connect();
         MapStorageDB.createTable(dbConnection);
         MapStorageDB.createCleanUpTrigger(dbConnection);
-        ResultSet mapsResultSet = MapStorageDB.getAll(dbConnection);
+
+
+
+        if (config.getBoolean("settings.migrate"))
+        {
+            // TODO: Remove loading from files
+            File folder = new File(getDataFolder() + "/maps");
+            File[] listOfFiles = folder.listFiles();
+            if (listOfFiles != null)
+            {
+                for (File file : listOfFiles) {
+                    if (file.isFile()) {
+                        int mapId = Integer.parseInt(file.getName().split("_")[1].split(Pattern.quote("."))[0]);
+                        try {
+                            BufferedReader br = new BufferedReader(new FileReader(file));
+                            String encodedData = br.readLine();
+
+                            if (!mapIDs_OLD.contains(mapId)) {
+                                mapIDs_OLD.add(mapId);
+
+                                int x = 0;
+                                int y = 0;
+                                int skipsLeft = 0;
+                                byte colorByte = 0;
+                                byte[][] map = new byte[128][128];
+                                for (int index = 0; index < encodedData.length(); index++) {
+                                    if (skipsLeft == 0) {
+                                        int end = index;
+
+                                        while (encodedData.charAt(end) != ',')
+                                            end++;
+
+                                        String str = encodedData.substring(index, end);
+                                        index = end;
+
+                                        colorByte = Byte.parseByte(str.substring(0, str.indexOf('_')));
+
+                                        skipsLeft = Integer.parseInt(str.substring(str.indexOf('_') + 1));
+
+                                    }
+
+                                    while (skipsLeft != 0) {
+                                        map[x][y] = colorByte;
+
+                                        y++;
+                                        if (y == 128) {
+                                            y = 0;
+                                            x++;
+                                        }
+
+                                        skipsLeft -= 1;
+                                    }
+                                }
+
+                                MapStorageDB.store(dbConnection, mapId, seed, map, null);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+        ResultSet mapsResultSet = MapStorageDB.getBySeed(dbConnection, seed);
 
         try {
             while (mapsResultSet.next())
@@ -73,10 +147,13 @@ public class Camera extends JavaPlugin {
 
                 mapView.addRenderer(new MapRenderer() {
                     @Override
-                    public void render(MapView mapViewNew, MapCanvas mapCanvas, Player player) {
+                    public void render(@NonNull MapView mapViewNew, @NonNull MapCanvas mapCanvas, @NonNull Player player) {
                     if (!mapIDs.contains(mapId)) {
                         mapIDs.add(mapId);
                         byte[][] mapData = MapStorageDB.deserializeByteArray2d(mapDataSerialized);
+
+                        mapView.setLocked(true);
+                        mapView.setTrackingPosition(false);
 
                         for (int i = 0; i < mapData.length; i++) {
                             for (int j = 0; j < mapData[0].length; j++) {
@@ -98,6 +175,13 @@ public class Camera extends JavaPlugin {
         // Commands
         getCommand("takePicture").setExecutor(new TakePictureCommand());
         getCommand("copyPicture").setExecutor(new CopyPictureCommand());
+
+        PluginCommand tagPictureCommand = getCommand("tagPicture");
+        if (tagPictureCommand != null)
+        {
+            tagPictureCommand.setExecutor(new TagPictureCommand());
+            tagPictureCommand.setTabCompleter(new TagPictureTabCompleter());
+        }
 
         PluginCommand fetchPictureCommand = getCommand("fetchPicture");
         if (fetchPictureCommand != null)

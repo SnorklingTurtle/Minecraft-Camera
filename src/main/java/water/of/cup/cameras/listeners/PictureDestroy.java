@@ -3,24 +3,14 @@ package main.java.water.of.cup.cameras.listeners;
 import main.java.water.of.cup.cameras.Camera;
 import main.java.water.of.cup.cameras.MapStorageDB;
 import main.java.water.of.cup.cameras.Picture;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityRemoveEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
 import java.util.HashSet;
 
 public class PictureDestroy implements Listener {
@@ -39,7 +29,8 @@ public class PictureDestroy implements Listener {
         if (mapId == null)
             return;
 
-        MapStorageDB.updateCounter(instance.getDbConnection(), mapId, false);
+        long worldSeed = event.getEntity().getWorld().getSeed();
+        MapStorageDB.updateCounter(instance.getDbConnection(), mapId, worldSeed, false);
     }
 
     @EventHandler
@@ -68,8 +59,8 @@ public class PictureDestroy implements Listener {
                 if (mapId == null)
                     return;
 
-                MapStorageDB.updateCounter(instance.getDbConnection(), mapId, false);
-
+                long worldSeed = itemEntity.getWorld().getSeed();
+                MapStorageDB.updateCounter(instance.getDbConnection(), mapId, worldSeed, false);
             }
         }.runTaskLater(instance, 1);
     }

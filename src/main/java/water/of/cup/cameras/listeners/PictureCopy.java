@@ -3,7 +3,8 @@ package main.java.water.of.cup.cameras.listeners;
 import main.java.water.of.cup.cameras.Camera;
 import main.java.water.of.cup.cameras.MapStorageDB;
 import main.java.water.of.cup.cameras.Picture;
-import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -47,7 +48,12 @@ public class PictureCopy implements Listener {
         if (mapId == null)
             return;
 
-        MapStorageDB.updateCounter(instance.getDbConnection(), mapId, true);
+        HumanEntity player = e.getWhoClicked();
+        if (!(player instanceof Player))
+            return;
+
+        long worldSeed = player.getWorld().getSeed();
+        MapStorageDB.updateCounter(instance.getDbConnection(), mapId, worldSeed, true);
     }
 
 }

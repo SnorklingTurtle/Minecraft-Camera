@@ -1,6 +1,6 @@
 main: main.java.water.of.cup.cameras.Camera
 name: Minecraft-Camera
-version: '1.18'
+version: '2.0'
 description: Take Pictures.
 author: Nicholas Kopiwoda
 api-version: "1.20"
@@ -9,6 +9,7 @@ commands:
     description: Take a picture
   copypicture:
     description: Copy a picture to clipboard
+  tagpicture:
+    description: Tag a picture
   fetchpicture:
-    description: Fetch a picture by it's ID
-    usage: /<command> [id]
+    description: Fetch a picture by it's tag

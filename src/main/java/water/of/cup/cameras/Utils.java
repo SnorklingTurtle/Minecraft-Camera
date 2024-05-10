@@ -1,6 +1,5 @@
 package main.java.water.of.cup.cameras;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -9,11 +8,7 @@ import org.bukkit.map.MapPalette;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class Utils {
 
@@ -30,7 +25,7 @@ public class Utils {
     }
 
     public static boolean isCamera(ItemStack item) {
-        return item != null && item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer()
+        return item != null && item.hasItemMeta() && item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer()
                 .has(Camera.getInstance().getCameraKey(), PersistentDataType.INTEGER);
     }
 
