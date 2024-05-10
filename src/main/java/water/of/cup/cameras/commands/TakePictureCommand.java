@@ -1,13 +1,12 @@
 package main.java.water.of.cup.cameras.commands;
 
-import main.java.water.of.cup.cameras.Camera;
 import main.java.water.of.cup.cameras.Picture;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CameraCommands implements CommandExecutor {
+public class TakePictureCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {

@@ -1,6 +1,7 @@
 package main.java.water.of.cup.cameras;
 
 import org.bukkit.*;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -22,6 +23,7 @@ public class Renderer extends MapRenderer {
     private final Camera instance = Camera.getInstance();
     private final Set<Coordinate> pickedCoordinates = new HashSet<>();
     private final Random random = new Random();
+    UUID playerUUID;
     Location eyes;
     boolean transparentWater;
     boolean shadows;
@@ -32,7 +34,7 @@ public class Renderer extends MapRenderer {
     byte[][] canvasBytes;
     MapCanvas canvas;
     MapView map;
-
+    World world;
     private int currentX = 0;
     private int currentY = 0;
     BukkitTask task;
@@ -41,10 +43,10 @@ public class Renderer extends MapRenderer {
 
     // Overworld sky colors
     private static final Color[] skyColors = {
-            new Color(131, 151, 166),   // Morning
-            new Color(113, 156, 237),   // Noon
-            new Color(87, 61, 102),     // Night
-            new Color(45, 56, 74),      // Midnight
+            new Color(113, 194, 237),  // Morning
+            new Color(52, 113, 227),   // Noon
+            new Color(101, 97, 207),   // Night
+            new Color(45, 56, 74),     // Midnight
     };
 
     @Override
@@ -57,9 +59,11 @@ public class Renderer extends MapRenderer {
 
         map.setLocked(true);
 
+        this.world = player.getWorld();
         this.canvas = canvas;
         this.map = map;
 
+        playerUUID = player.getUniqueId();
         eyes = player.getEyeLocation().clone();
 
         isRenderingRandomly = instance.getConfig().getBoolean("settings.camera.renderRandomly");
@@ -78,7 +82,7 @@ public class Renderer extends MapRenderer {
         currentY = 0;
 
         if (isDebugging)
-            instance.getLogger().info("-- Render Begin ---");
+            instance.getLogger().info("--- Render Begin ---");
 
         // Schedule the task to run every tick (20 times per second)
         int tickRate = 1;
@@ -104,7 +108,7 @@ public class Renderer extends MapRenderer {
     {
         // Save to DB
         Bukkit.getScheduler().runTaskAsynchronously(instance,
-            () -> MapStorageDB.store(instance.getDbConnection(), map.getId(), canvasBytes));
+            () -> MapStorageDB.store(instance.getDbConnection(), map.getId(), world.getSeed(), canvasBytes, playerUUID, 1));
 
         // Stop render task
         task.cancel();
@@ -212,12 +216,23 @@ public class Renderer extends MapRenderer {
                 }
             }
 
+            // TODO: Perhaps use getMapColor() instead
+            // Color blockColor = result.getHitBlock().getBlockData().getMapColor().asRGB();
+            // canvas.setPixelColor(x, y, new Color(blockColor));
+
+            if (result.getHitBlock().getBlockPower() > 0)
+            {
+                if (result.getHitBlock().getType().equals(Material.REDSTONE_LAMP))
+                    dye = new double[]{1.85, 1.85, 1.85};
+            }
+
             byte color;
             if (transparentWater) {
                 color = Utils.colorFromType(result.getHitBlock(), dye);
             } else {
                 color = Utils.colorFromType(liquidResult.getHitBlock(), dye);
             }
+
             canvas.setPixel(x, y, color);
             canvasBytes[x][y] = color;
         } else if (liquidResult != null) {

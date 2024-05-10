@@ -4,16 +4,19 @@ Minecraft Camera
 Minecraft Camera plugin for Spigot. Adds craft-able cameras to your Minecraft server and the 
 ability to take pictures. Works with Geyser, though the camera looks like a Steve head.
 
-This is an updated version of the [Cameras plugin by Cup0fCode](https://github.com/Cup0fCode/Cameras/). Tested on Minecraft 1.20.4. 
+This is an updated version of the [Cameras plugin by Cup0fCode](https://github.com/Cup0fCode/Cameras/). Tested on Minecraft 1.20.5. 
 
-This version contains 2 major performance improvements:
+This version contains 3 major performance improvements:
 
 * **Initializing the plugin at server boot is much faster**<br>
 The color palette is now loaded from a config file. Previously a zipped file containing textures for all block types was downloaded,
-unzipped - then 1 pixel from each texture was picked determine the color.
+unzipped - then 1 pixel from each texture was picked to determine the color.
 
 * **Taking pictures is much more performant**<br>
-Rendering is new distributed across ticks. Previously rendering would make the main thread hang, and the whole server would lag. 
+Rendering is now distributed across ticks. Previously rendering would make the main thread hang, and the whole server would lag. 
+
+* **Pictures are compressed when stored**<br>
+Each picture is usually at a size of 0.5-3 KB (3-30 KB without compression).
 
 
 Other improvements:
@@ -21,13 +24,16 @@ Other improvements:
 * In Overworld the sky color changes depending on the time of day.
 * Amount of rendered pixels per ticks can be adjusted through the config.
 * Render distance can be adjusted through the config.
+* Players can copy a picture to clipboard.
+* Players can tag a picture and later fetch it by command - even across seeds.
 * Camera skin can be changed through the config.
+* Pictures that despawned or has been thrown into lava, will be removed from the database.
 * Updated colors for newer block types.
-* All logging is prefixed with `[Camera]`.
+* All logging is prefixed with `[Minecraft-Camera]`.
 
 ## Pictures
 
-<img src="https://i.imgur.com/Bzi99fL.png" width="225"> <img src="https://i.imgur.com/YRiBxGn.png" width="225"> <img src="https://i.imgur.com/pstXzfc.png" width="225">
+<img src="https://i.imgur.com/Bzi99fL.png" width="225" alt=""> <img src="https://i.imgur.com/YRiBxGn.png" width="225" alt=""> <img src="https://i.imgur.com/pstXzfc.png" width="225" alt="">
 
 ## Installation
 
@@ -37,7 +43,7 @@ Other improvements:
 
 If you don't already have a config file, one will be created on first boot of the server. The config is located at `plugins/Minecraft-Camera/config.yml`. Restart the server after editing the config. 
 
-Images are saved as txt-files in `plugins/Minecraft-Camera/maps`. Each file is usually at a size of 3-12 KB.
+Pictures are stored in a SQLite database at `plugins/Minecraft-Camera/pictures.db`. 
 
 ## Permissions
 
@@ -64,8 +70,13 @@ Players can craft cameras using the following recipe:
 
 ![crafting](https://i.imgur.com/GsrxLPY.png)
 
-Operators on the server (`/op <username>`) can take pictures with the command `/takepicture`. When using this command a camera and paper is 
-not required, however you still need space in your inventory.
+### Commands
+
+* `/tagpicture <tag>` - This is intended for servers that resets their world seed every season, but still want to let players retrieve pictures from the last season. 
+* `/fetchpicture <tag>` - Allows players to fetch a picture by its tag (see above). Paper is required, except for operators.
+* `/copypicture` - Lets you copy a picture to clipboard.
+* `/takepicture` - Operators on the server (`/op <username>`) can take pictures using this command. Paper not required. Intended for testing only.
+
 
 ## Limitations
 
@@ -75,19 +86,20 @@ not required, however you still need space in your inventory.
 
 ## Todo
 
+* [Idea] Use getMapColor() and fallback to color-mapping.config only if needed
 * [Optimize] Incorrect colors
 * [Optimize] Can converting colors from string be improved
 * [Optimize] Water seems to be transparent even with `transparentWater: false`
-* [Optimize] See if loading maps at boot can be improved
 * [Idea] Prettier sky
 * [Idea] Framing
-* [Idea] Copy to clipboard
 
 ## Done
 
+* [Idea] Allow players to copy pictures to clipboard
 * [Bug] When shooting multiple times, subsequent pictures will stop rendering when the first one finishes
 * [QA] See if permissions works as intended
 * [Feature] Let sky color depend on time of day
+* [Optimize] Improve loading maps
 * [Optimize] Set default render distance to 128 (instead of 256)
 * [Feature] Allow changing render distance from config
 * [Optimize] Don't take picture, when cancelling placement of camera.
@@ -95,7 +107,7 @@ not required, however you still need space in your inventory.
 * [Optimize] Prefix all console logging with `[Camera]`
 * [Optimize] Render X amount of pixels per tick, for better performance
 * [Bug] It's possible to take pictures with a full inventory using `/takepicture`
-* [Optimize] ~~See if it's possible to remove despawned images from the `maps` folder~~
+* [Optimize] See if it's possible to remove despawned images from the `maps` folder
 * [Feature] ~~Add option to place camera on the ground (might conflict with claims plugin).~~
 
 ## Issues

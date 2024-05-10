@@ -1,8 +1,14 @@
 package main.java.water.of.cup.cameras;
 
-import main.java.water.of.cup.cameras.commands.CameraCommands;
+import main.java.water.of.cup.cameras.commands.CopyPictureCommand;
+import main.java.water.of.cup.cameras.commands.FetchPictureCommand;
+import main.java.water.of.cup.cameras.commands.TagPictureCommand;
+import main.java.water.of.cup.cameras.commands.TakePictureCommand;
 import main.java.water.of.cup.cameras.listeners.*;
+import main.java.water.of.cup.cameras.tabCompleter.FetchPictureTabCompleter;
+import main.java.water.of.cup.cameras.tabCompleter.TagPictureTabCompleter;
 import org.bukkit.*;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -27,6 +33,7 @@ import java.util.regex.Pattern;
 
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class Camera extends JavaPlugin {
 
@@ -36,7 +43,6 @@ public class Camera extends JavaPlugin {
     List<Integer> mapIDs = new ArrayList<>();
     List<Integer> mapIDs_OLD = new ArrayList<>();
     ColorMapping colorMapping = new ColorMapping();
-    private File configFile;
     private FileConfiguration config;
     Connection dbConnection;
 
@@ -51,9 +57,12 @@ public class Camera extends JavaPlugin {
         loadConfig();
         this.colorMapping.initialize();
 
+        long seed = Bukkit.getWorlds().get(0).getSeed();
+
         dbConnection = MapStorageDB.connect();
         MapStorageDB.createTable(dbConnection);
         MapStorageDB.createCleanUpTrigger(dbConnection);
+
 
 
         if (config.getBoolean("settings.migrate"))
@@ -70,77 +79,64 @@ public class Camera extends JavaPlugin {
                             BufferedReader br = new BufferedReader(new FileReader(file));
                             String encodedData = br.readLine();
 
-                            MapView mapView = Bukkit.getMap(Integer.valueOf(mapId));
+                            if (!mapIDs_OLD.contains(mapId)) {
+                                mapIDs_OLD.add(mapId);
 
-                            mapView.setTrackingPosition(false);
-                            for (MapRenderer renderer : mapView.getRenderers())
-                                mapView.removeRenderer(renderer);
+                                int x = 0;
+                                int y = 0;
+                                int skipsLeft = 0;
+                                byte colorByte = 0;
+                                byte[][] map = new byte[128][128];
+                                for (int index = 0; index < encodedData.length(); index++) {
+                                    if (skipsLeft == 0) {
+                                        int end = index;
 
-        //                    mapView.addRenderer(new MapRenderer() {
-        //                        @Override
-        //                        public void render(MapView mapViewNew, MapCanvas mapCanvas, Player player) {
-                                    if (!mapIDs_OLD.contains(mapId)) {
-                                        mapIDs_OLD.add(mapId);
+                                        while (encodedData.charAt(end) != ',')
+                                            end++;
 
-                                        int x = 0;
-                                        int y = 0;
-                                        int skipsLeft = 0;
-                                        byte colorByte = 0;
-                                        byte[][] map = new byte[128][128];
-                                        for (int index = 0; index < encodedData.length(); index++) {
-                                            if (skipsLeft == 0) {
-                                                int end = index;
+                                        String str = encodedData.substring(index, end);
+                                        index = end;
 
-                                                while (encodedData.charAt(end) != ',')
-                                                    end++;
+                                        colorByte = Byte.parseByte(str.substring(0, str.indexOf('_')));
 
-                                                String str = encodedData.substring(index, end);
-                                                index = end;
+                                        skipsLeft = Integer.parseInt(str.substring(str.indexOf('_') + 1));
 
-                                                colorByte = Byte.parseByte(str.substring(0, str.indexOf('_')));
+                                    }
 
-                                                skipsLeft = Integer.parseInt(str.substring(str.indexOf('_') + 1));
+                                    while (skipsLeft != 0) {
+                                        map[x][y] = colorByte;
 
-                                            }
-
-                                            while (skipsLeft != 0) {
-                                                // mapCanvas.setPixel(x, y, colorByte);
-                                                map[x][y] = colorByte;
-
-                                                y++;
-                                                if (y == 128) {
-                                                    y = 0;
-                                                    x++;
-                                                }
-
-                                                skipsLeft -= 1;
-                                            }
+                                        y++;
+                                        if (y == 128) {
+                                            y = 0;
+                                            x++;
                                         }
 
-                                        MapStorageDB.store(dbConnection, mapId, map);
+                                        skipsLeft -= 1;
                                     }
-        //                        }
-        //                    });
+                                }
 
+                                // Cant know for sure how many copies the player has made, so it's just 99 to be on the safe side.
+                                MapStorageDB.store(dbConnection, mapId, seed, map, null, 99);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                     }
                 }
-
             }
         }
 
 
-        ResultSet mapsResultSet = MapStorageDB.getAll(dbConnection);
+
+
+        ResultSet mapsResultSet = MapStorageDB.getBySeed(dbConnection, seed);
 
         try {
             while (mapsResultSet.next())
             {
                 int mapId = mapsResultSet.getInt("map_id");
                 byte[] mapDataSerialized = mapsResultSet.getBytes("data");
-                byte[][] mapData = MapStorageDB.deserializeByteArray2d(mapDataSerialized);
 
                 MapView mapView = Bukkit.getMap(mapId);
                 if (mapView == null)
@@ -152,9 +148,13 @@ public class Camera extends JavaPlugin {
 
                 mapView.addRenderer(new MapRenderer() {
                     @Override
-                    public void render(MapView mapViewNew, MapCanvas mapCanvas, Player player) {
+                    public void render(@NonNull MapView mapViewNew, @NonNull MapCanvas mapCanvas, @NonNull Player player) {
                     if (!mapIDs.contains(mapId)) {
                         mapIDs.add(mapId);
+                        byte[][] mapData = MapStorageDB.deserializeByteArray2d(mapDataSerialized);
+
+                        mapView.setLocked(true);
+                        mapView.setTrackingPosition(false);
 
                         for (int i = 0; i < mapData.length; i++) {
                             for (int j = 0; j < mapData[0].length; j++) {
@@ -173,11 +173,64 @@ public class Camera extends JavaPlugin {
         }
 
 
-        getCommand("takePicture").setExecutor(new CameraCommands());
-        registerListeners(new CameraClick(), new PlayerJoin(), new PrepareItemCraft(), new PictureCopy(), new PictureDestroy());
+        // Commands
+        getCommand("takePicture").setExecutor(new TakePictureCommand());
+        getCommand("copyPicture").setExecutor(new CopyPictureCommand());
+
+        PluginCommand tagPictureCommand = getCommand("tagPicture");
+        if (tagPictureCommand != null)
+        {
+            tagPictureCommand.setExecutor(new TagPictureCommand());
+            tagPictureCommand.setTabCompleter(new TagPictureTabCompleter());
+        }
+
+        PluginCommand fetchPictureCommand = getCommand("fetchPicture");
+        if (fetchPictureCommand != null)
+        {
+            fetchPictureCommand.setExecutor(new FetchPictureCommand());
+            fetchPictureCommand.setTabCompleter(new FetchPictureTabCompleter());
+        }
+
+        // Events
+        registerListeners(
+            new CameraClick(),
+            new PlayerJoin(),
+            new PrepareItemCraft(),
+            new PictureCopy(),
+            new PictureDestroy()
+        );
 
         if (config.getBoolean("settings.camera.recipe.enabled"))
             addCameraRecipe();
+
+
+        /*
+        StringBuilder materials = new StringBuilder();
+        for (Material mat : Material.values())
+        {
+            if (mat.isBlock() && !mat.isAir())
+            {
+                try
+                {
+                    org.bukkit.Color col = mat.createBlockData().getMapColor();
+                    int colRed = col.getRed();
+                    int colGreen = col.getGreen();
+                    int colBlue = col.getBlue();
+                    materials.append(mat.name()).append("=").append(colRed).append(",").append(colGreen).append(",").append(colBlue).append("\n"); //.append("\t\t\t\t\t").append(mat.isSolid() ? "Solid" : "").append("\n");
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        try (PrintWriter out = new PrintWriter(getDataFolder().getAbsolutePath() + "/color-mapping.config.sample")) {
+            out.println(materials);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        */
     }
 
     @Override
@@ -267,7 +320,7 @@ public class Camera extends JavaPlugin {
             }
         }
 
-        configFile = new File(getDataFolder(), "config.yml");
+        File configFile = new File(getDataFolder(), "config.yml");
         config = YamlConfiguration.loadConfiguration(configFile);
     }
 
