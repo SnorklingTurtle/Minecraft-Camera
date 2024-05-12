@@ -90,7 +90,7 @@ public class FetchPictureCommand implements CommandExecutor {
         MapView mapView = Bukkit.getMap(sourceMapId);
         if (mapView != null)
         {
-            MapStorageDB.updateCounter(instance.getDbConnection(), sourceMapId, currentSeed, true);
+            MapStorageDB.updateCounter(instance.getDbConnection(), sourceMapId, currentSeed, 1);
         }
         else
         {

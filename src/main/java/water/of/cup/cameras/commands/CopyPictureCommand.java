@@ -9,14 +9,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapPalette;
-import org.bukkit.map.MapRenderer;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+/*
+* Copy to clipboard
+* */
 
 public class CopyPictureCommand implements CommandExecutor {
 

@@ -30,7 +30,7 @@ public class PictureDestroy implements Listener {
             return;
 
         long worldSeed = event.getEntity().getWorld().getSeed();
-        MapStorageDB.updateCounter(instance.getDbConnection(), mapId, worldSeed, false);
+        MapStorageDB.updateCounter(instance.getDbConnection(), mapId, worldSeed, -itemStack.getAmount());
     }
 
     @EventHandler
@@ -60,7 +60,7 @@ public class PictureDestroy implements Listener {
                     return;
 
                 long worldSeed = itemEntity.getWorld().getSeed();
-                MapStorageDB.updateCounter(instance.getDbConnection(), mapId, worldSeed, false);
+                MapStorageDB.updateCounter(instance.getDbConnection(), mapId, worldSeed, -itemStack.getAmount());
             }
         }.runTaskLater(instance, 1);
     }

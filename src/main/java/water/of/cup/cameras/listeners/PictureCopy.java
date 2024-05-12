@@ -11,6 +11,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
+/*
+* Keep count when players copies pictures using the Cartography Table
+* */
+
 public class PictureCopy implements Listener {
 
     Camera instance = Camera.getInstance();
@@ -53,7 +57,7 @@ public class PictureCopy implements Listener {
             return;
 
         long worldSeed = player.getWorld().getSeed();
-        MapStorageDB.updateCounter(instance.getDbConnection(), mapId, worldSeed, true);
+        MapStorageDB.updateCounter(instance.getDbConnection(), mapId, worldSeed, 1);
     }
 
 }

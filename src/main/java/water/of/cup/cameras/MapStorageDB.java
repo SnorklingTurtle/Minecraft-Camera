@@ -133,14 +133,14 @@ public class MapStorageDB {
         return rs;
     }
 
-    public static void updateCounter(Connection conn, Integer map_id, long world_seed, boolean isAddition) {
+    public static void updateCounter(Connection conn, Integer map_id, long world_seed, int amount) {
         Camera instance = Camera.getInstance();
         String query = String.format("UPDATE %s SET counter=(counter+?) WHERE map_id=? AND seed=?;", MapStorageDB.tableName);
 
         try
         {
             PreparedStatement statement = conn.prepareStatement(query);
-            statement.setInt(1, isAddition ? 1 : -1);
+            statement.setInt(1, amount);
             statement.setInt(2, map_id);
             statement.setLong(3, world_seed);
             statement.executeUpdate();
