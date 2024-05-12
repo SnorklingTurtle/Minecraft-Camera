@@ -1,6 +1,6 @@
 main: main.java.water.of.cup.cameras.Camera
 name: Minecraft-Camera
-version: '2.0'
+version: '2.2'
 description: Take Pictures.
 author: Nicholas Kopiwoda
 api-version: "1.20"
