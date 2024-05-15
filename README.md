@@ -86,7 +86,8 @@ Players can craft cameras using the following recipe:
 
 ## Todo
 
-* [Idea] Use getMapColor() and fallback to color-mapping.config only if needed
+* [Idea] Use world.getViewDistance() for render distance
+* [Idea] Use getBlockData().getMapColor() and fallback to color-mapping.config only if needed
 * [Optimize] Incorrect colors
 * [Optimize] Can converting colors from string be improved
 * [Optimize] Water seems to be transparent even with `transparentWater: false`
