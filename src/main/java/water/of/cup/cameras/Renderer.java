@@ -1,10 +1,8 @@
 package main.java.water.of.cup.cameras;
 
 import org.bukkit.*;
-import org.bukkit.block.data.Lightable;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
-import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -226,25 +224,25 @@ public class Renderer extends MapRenderer {
                     dye = new double[]{1.85, 1.85, 1.85};
             }
 
-            byte color;
+            Color color;
             if (transparentWater) {
                 color = Utils.colorFromType(result.getHitBlock(), dye);
             } else {
                 color = Utils.colorFromType(liquidResult.getHitBlock(), dye);
             }
 
-            canvas.setPixel(x, y, color);
-            canvasBytes[x][y] = color;
+            canvas.setPixelColor(x, y, color);
+            canvasBytes[x][y] = ColorPalette.matchColor(color);
         } else if (liquidResult != null) {
             // set map pixel to color of liquid block found
-            byte color = Utils.colorFromType(liquidResult.getHitBlock(), new double[]{1, 1, 1});
-            canvas.setPixel(x, y, color);
-            canvasBytes[x][y] = color;
+            Color color = Utils.colorFromType(liquidResult.getHitBlock(), new double[]{1, 1, 1});
+            canvas.setPixelColor(x, y, color);
+            canvasBytes[x][y] = ColorPalette.matchColor(color);
         } else {
             // no block was hit, so we will assume we are looking at the sky
-            byte skyColor = MapPalette.matchColor(getSkyColor(eyes.getWorld()));
-            canvas.setPixel(x, y, skyColor);
-            canvasBytes[x][y] = skyColor;
+            Color skyColor = getSkyColor(eyes.getWorld());
+            canvas.setPixelColor(x, y, skyColor);
+            canvasBytes[x][y] = ColorPalette.matchColor(skyColor);
         }
     }
 

@@ -1,6 +1,7 @@
 package main.java.water.of.cup.cameras.commands;
 
 import main.java.water.of.cup.cameras.Camera;
+import main.java.water.of.cup.cameras.ColorPalette;
 import main.java.water.of.cup.cameras.MapStorageDB;
 import main.java.water.of.cup.cameras.Picture;
 import org.bukkit.command.Command;
@@ -8,7 +9,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapPalette;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
@@ -74,7 +74,7 @@ public class CopyPictureCommand implements CommandExecutor {
 
         for (int y = 0; y < sourceHeight; y++) {
             for (int x = 0; x < sourceWidth; x++) {
-                Color color = MapPalette.getColor(imageData[x][y]);
+                Color color = ColorPalette.getColor(imageData[x][y]);
                 graphics.setColor(color);
                 graphics.fillRect(x, y, 1, 1);
             }
