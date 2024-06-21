@@ -2,24 +2,21 @@ package main.java.water.of.cup.cameras;
 
 import com.google.common.base.Preconditions;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
 public final class ColorPalette {
     private ColorPalette() {}
 
-    @NotNull
     private static Color c(int r, int g, int b) {
         return new Color(r, g, b);
     }
 
-    @NotNull
     private static Color c(int r, int g, int b, int a) {
         return new Color(r, g, b, a);
     }
 
-    private static double getDistance(@NotNull Color c1, @NotNull Color c2) {
+    private static double getDistance(Color c1, Color c2) {
         double rmean = (c1.getRed() + c2.getRed()) / 2.0;
         double r = c1.getRed() - c2.getRed();
         double g = c1.getGreen() - c2.getGreen();
@@ -30,7 +27,6 @@ public final class ColorPalette {
         return weightR * r * r + weightG * g * g + weightB * b * b;
     }
 
-    @NotNull
     static final Color[] colors = {
             c(0, 0, 0, 0), c(0, 0, 0, 0), c(0, 0, 0, 0), c(0, 0, 0, 0),
             c(89, 125, 39), c(109, 153, 48), c(127, 178, 56), c(67, 94, 29),
@@ -100,7 +96,7 @@ public final class ColorPalette {
         return matchColor(new Color(r, g, b));
     }
 
-    public static byte matchColor(@NotNull Color color) {
+    public static byte matchColor(Color color) {
         if (color.getAlpha() < 128) return 0;
 
         if (mapColorCache != null && mapColorCache.isCached()) {
@@ -121,14 +117,13 @@ public final class ColorPalette {
         return (byte) (index < 128 ? index : -129 + (index - 127));
     }
 
-    @NotNull
     public static Color getColor(byte index) {
         return colors[index >= 0 ? index : index + 256];
     }
 
     private static ColorPalette.MapColorCache mapColorCache;
 
-    public static void setMapColorCache(@NotNull ColorPalette.MapColorCache mapColorCache) {
+    public static void setMapColorCache(ColorPalette.MapColorCache mapColorCache) {
         Preconditions.checkState(ColorPalette.mapColorCache == null, "Map color cache already set");
 
         ColorPalette.mapColorCache = mapColorCache;
@@ -137,6 +132,6 @@ public final class ColorPalette {
     public interface MapColorCache {
         boolean isCached();
 
-        byte matchColor(@NotNull Color color);
+        byte matchColor(Color color);
     }
 }

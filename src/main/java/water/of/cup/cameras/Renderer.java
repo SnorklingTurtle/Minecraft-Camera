@@ -33,6 +33,7 @@ public class Renderer extends MapRenderer {
     MapCanvas canvas;
     MapView map;
     World world;
+    long time;
     private int currentX = 0;
     private int currentY = 0;
     BukkitTask task;
@@ -60,6 +61,7 @@ public class Renderer extends MapRenderer {
         this.world = player.getWorld();
         this.canvas = canvas;
         this.map = map;
+        this.time = world.getTime();
 
         playerUUID = player.getUniqueId();
         eyes = player.getEyeLocation().clone();
@@ -188,10 +190,10 @@ public class Renderer extends MapRenderer {
         Vector rayTraceVector = new Vector(Math.cos(yaw + xrotate) * Math.cos(pitch + yrotate),
                 Math.sin(pitch + yrotate), Math.sin(yaw + xrotate) * Math.cos(pitch + yrotate));
 
-        RayTraceResult result = eyes.getWorld().rayTraceBlocks(eyes, rayTraceVector, renderDistance);
+        RayTraceResult result = world.rayTraceBlocks(eyes, rayTraceVector, renderDistance);
 
         // Color change for liquids
-        RayTraceResult liquidResult = eyes.getWorld().rayTraceBlocks(eyes, rayTraceVector, renderDistance,
+        RayTraceResult liquidResult = world.rayTraceBlocks(eyes, rayTraceVector, renderDistance,
                 FluidCollisionMode.ALWAYS, false);
         double[] dye = new double[]{1, 1, 1}; // values color is multiplied by
         if (transparentWater) {
@@ -240,20 +242,33 @@ public class Renderer extends MapRenderer {
             canvasBytes[x][y] = ColorPalette.matchColor(color);
         } else {
             // no block was hit, so we will assume we are looking at the sky
-            Color skyColor = getSkyColor(eyes.getWorld());
+            Color skyColor = getSkyColor(world, y);
             canvas.setPixelColor(x, y, skyColor);
             canvasBytes[x][y] = ColorPalette.matchColor(skyColor);
         }
     }
 
-    private Color getSkyColor(World world) {
+    private Color getSkyColor(World world, int y) {
         Color dayColor = skyColors[1];
         if (world == null) return dayColor;
         if (world.getName().contains("end")) return new Color(36, 20, 61);
         if (world.getName().contains("nether")) return new Color(44, 7, 7);
 
-        long time = world.getTime();
-        return interpolateColor((int)time);
+        Color interpolated = interpolateColor((int)time);
+        return getSkyGradientColor(interpolated, y, time > 12000 ? 128 : 190);
+    }
+
+    private static Color getSkyGradientColor(Color color, int y, float maxBrightness)
+    {
+        float brightnessFactor = y / Math.min(maxBrightness, 255);
+        int red = (int)(color.getRed() + (255 - color.getRed()) * brightnessFactor);
+        int green = (int)(color.getGreen() + (255 - color.getGreen()) * brightnessFactor);
+        int blue = (int)(color.getBlue() + (255 - color.getBlue()) * brightnessFactor);
+        return new Color(
+                Math.min(red, 255),
+                Math.min(green, 255),
+                Math.min(blue, 255)
+        );
     }
 
     public static Color interpolateColor(int value) {
