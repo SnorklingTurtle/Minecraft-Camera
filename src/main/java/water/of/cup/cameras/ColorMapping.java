@@ -3,6 +3,7 @@ package main.java.water.of.cup.cameras;
 import org.bukkit.block.Block;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Properties;
 import java.awt.Color;
 
@@ -32,6 +33,11 @@ public class ColorMapping {
         catch (IOException e) {
             instance.getLogger().warning(String.format("Could not copy '%s' into '%s'", colorMappingResourceFile, colorMappingDestinationFile));
         }
+    }
+
+    public Properties getColors()
+    {
+        return colorMapping;
     }
 
     public Color getColorFromType(Block block, double[] dye)

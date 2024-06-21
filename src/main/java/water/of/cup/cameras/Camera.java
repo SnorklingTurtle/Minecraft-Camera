@@ -128,8 +128,6 @@ public class Camera extends JavaPlugin {
         }
 
 
-
-
         ResultSet mapsResultSet = MapStorageDB.getBySeed(dbConnection, seed);
 
         try {
@@ -159,7 +157,7 @@ public class Camera extends JavaPlugin {
                         for (int i = 0; i < mapData.length; i++) {
                             for (int j = 0; j < mapData[0].length; j++) {
                                 byte colorByte = mapData[i][j];
-                                mapCanvas.setPixel(i, j, colorByte);
+                                mapCanvas.setPixelColor(i, j, ColorPalette.getColor(colorByte));
                             }
                         }
                     }
