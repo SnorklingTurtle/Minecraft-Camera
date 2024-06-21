@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapPalette;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.awt.*;
@@ -12,16 +11,10 @@ import java.util.Map;
 
 public class Utils {
 
-    @SuppressWarnings("deprecation")
-    public static byte colorFromType(Block block, double[] dye) {
+    public static Color colorFromType(Block block, double[] dye) {
         Camera instance = Camera.getInstance();
-
         Color color = instance.colorMapping.getColorFromType(block, dye);
-        if (color == null) {
-            return MapPalette.GRAY_2; // no color was found, use gray
-        }
-
-        return MapPalette.matchColor(color);
+        return color == null ? Color.gray : color;
     }
 
     public static boolean isCamera(ItemStack item) {

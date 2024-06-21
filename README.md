@@ -4,7 +4,7 @@ Minecraft Camera
 Minecraft Camera plugin for Spigot. Adds craft-able cameras to your Minecraft server and the 
 ability to take pictures. Works with Geyser, though the camera looks like a Steve head.
 
-This is an updated version of the [Cameras plugin by Cup0fCode](https://github.com/Cup0fCode/Cameras/). Tested on Minecraft 1.20.5. 
+This is an updated version of the [Cameras plugin by Cup0fCode](https://github.com/Cup0fCode/Cameras/). Tested on Minecraft 1.21. 
 
 This version contains 3 major performance improvements:
 

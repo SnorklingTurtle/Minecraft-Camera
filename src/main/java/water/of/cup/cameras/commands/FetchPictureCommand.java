@@ -1,9 +1,6 @@
 package main.java.water.of.cup.cameras.commands;
 
-import main.java.water.of.cup.cameras.Camera;
-import main.java.water.of.cup.cameras.MapStorageDB;
-import main.java.water.of.cup.cameras.Message;
-import main.java.water.of.cup.cameras.Utils;
+import main.java.water.of.cup.cameras.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -65,10 +62,10 @@ public class FetchPictureCommand implements CommandExecutor {
 
         ResultSet rs = MapStorageDB.getByTag(instance.getDbConnection(), tag);
 
-        long sourceSeed = 0;
-        int sourceMapId = 0;
-        String sourcePhotographer = null;
-        byte[] mapDataSerialized = null;
+        long sourceSeed;
+        int sourceMapId;
+        String sourcePhotographer;
+        byte[] mapDataSerialized;
         try {
             if (rs.next()) {
                 mapDataSerialized = rs.getBytes("data");
@@ -121,7 +118,8 @@ public class FetchPictureCommand implements CommandExecutor {
 
                     for (int y = 0; y < 128; y++) {
                         for (int x = 0; x < 128; x++) {
-                            mapCanvas.setPixel(x, y, map[x][y]);
+                            byte colorIndex = map[x][y];
+                            mapCanvas.setPixelColor(x, y, ColorPalette.getColor(colorIndex));
                         }
                     }
                 }
