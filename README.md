@@ -63,6 +63,9 @@ cameras.useitem:
 cameras.command:
   description: Allow the command /takepicture
   default: op
+cameras.paperless:
+  description: Allow taking pictures without paper
+  default: false
 ```
 
 ## Usage
@@ -73,9 +76,9 @@ Players can craft cameras using the following recipe:
 ### Commands
 
 * `/tagpicture <tag>` - This is intended for servers that resets their world seed every season, but still want to let players retrieve pictures from the last season. 
-* `/fetchpicture <tag>` - Allows players to fetch a picture by its tag (see above). Paper is required, except for operators.
+* `/fetchpicture <tag>` - Allows players to fetch a picture by its tag (see above).
 * `/copypicture` - Lets you copy a picture to clipboard.
-* `/takepicture` - Operators on the server (`/op <username>`) can take pictures using this command. Paper not required. Intended for testing only.
+* `/takepicture` - Take pictures using command line. Camera not required.
 
 
 ## Limitations

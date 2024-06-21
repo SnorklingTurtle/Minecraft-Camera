@@ -34,6 +34,13 @@ public class Picture {
             return false;
         }
 
+        // check to make sure the player has paper
+        boolean isPaperless = p.hasPermission("cameras.paperless");
+        if (!isPaperless && !p.getInventory().contains(Material.PAPER)) {
+            Message.show(p, "settings.messages.nopaper");
+            return false;
+        }
+
         ItemStack itemStack = new ItemStack(Material.FILLED_MAP);
         MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
         MapView mapView = Bukkit.createMap(p.getWorld());
@@ -55,6 +62,11 @@ public class Picture {
 
         // Play capture sound
         p.playSound(p.getLocation(), Sound.BLOCK_PISTON_EXTEND, 0.5F, 2.0F);
+
+        if (!isPaperless) {
+            // remove 1 paper from the player's inventory
+            Utils.removePaperFromInventory(p, 1);
+        }
 
         return true;
     }

@@ -48,7 +48,7 @@ public class FetchPictureCommand implements CommandExecutor {
         }
 
         // check to make sure the player has paper
-        if (!player.getInventory().contains(Material.PAPER) && !player.isOp()) {
+        if (!player.hasPermission("cameras.paperless") && !player.getInventory().contains(Material.PAPER)) {
             Message.show(player, "settings.messages.nopaper");
             return false;
         }
@@ -146,7 +146,7 @@ public class FetchPictureCommand implements CommandExecutor {
         mapMeta.setMapView(mapView);
         itemMapFilled.setItemMeta(mapMeta);
 
-        if (!player.isOp())
+        if (!player.hasPermission("cameras.paperless"))
         {
             // Remove 1 paper from players inventory
             Utils.removePaperFromInventory(player, 1);

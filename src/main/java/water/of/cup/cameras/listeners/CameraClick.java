@@ -1,9 +1,7 @@
 package main.java.water.of.cup.cameras.listeners;
 
-import main.java.water.of.cup.cameras.Message;
 import main.java.water.of.cup.cameras.Picture;
 import main.java.water.of.cup.cameras.Utils;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,20 +22,7 @@ public class CameraClick implements Listener {
             return;
 
         Player p = e.getPlayer();
-        boolean isOp = p.isOp();
 
-        // check to make sure the player has paper
-        if (!p.getInventory().contains(Material.PAPER) && !isOp) {
-            Message.show(p, "settings.messages.nopaper");
-            return;
-        }
-
-        boolean tookPicture = Picture.takePicture(p);
-
-        if (tookPicture && !isOp) {
-            // remove 1 paper from the player's inventory
-            Utils.removePaperFromInventory(p, 1);
-        }
-
+        Picture.takePicture(p);
     }
 }
