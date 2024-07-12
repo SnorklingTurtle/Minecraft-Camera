@@ -1,9 +1,6 @@
 package main.java.water.of.cup.cameras;
 
-import main.java.water.of.cup.cameras.commands.CopyPictureCommand;
-import main.java.water.of.cup.cameras.commands.FetchPictureCommand;
-import main.java.water.of.cup.cameras.commands.TagPictureCommand;
-import main.java.water.of.cup.cameras.commands.TakePictureCommand;
+import main.java.water.of.cup.cameras.commands.*;
 import main.java.water.of.cup.cameras.listeners.*;
 import main.java.water.of.cup.cameras.tabCompleter.FetchPictureTabCompleter;
 import main.java.water.of.cup.cameras.tabCompleter.TagPictureTabCompleter;
@@ -30,6 +27,7 @@ import java.sql.ResultSet;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
@@ -41,7 +39,6 @@ public class Camera extends JavaPlugin {
     private NamespacedKey recipeKey;
     private static Camera instance;
     List<Integer> mapIDs = new ArrayList<>();
-    List<Integer> mapIDs_OLD = new ArrayList<>();
     ColorMapping colorMapping = new ColorMapping();
     private FileConfiguration config;
     Connection dbConnection;
@@ -57,121 +54,73 @@ public class Camera extends JavaPlugin {
         loadConfig();
         this.colorMapping.initialize();
 
-        long seed = Bukkit.getWorlds().get(0).getSeed();
-
         dbConnection = MapStorageDB.connect();
         MapStorageDB.createTable(dbConnection);
         MapStorageDB.createCleanUpTrigger(dbConnection);
 
+        List<Long> loadedSeeds = new ArrayList<>();
+        List<World> worlds = getServer().getWorlds();
 
-
-        if (config.getBoolean("settings.migrate"))
+        for (World world : worlds)
         {
-            // TODO: Remove loading from files
-            File folder = new File(getDataFolder() + "/maps");
-            File[] listOfFiles = folder.listFiles();
-            if (listOfFiles != null)
+            long seed = world.getSeed();
+
+            getLogger().info("Found world '" + world.getName() + "' with seed " + world.getSeed());
+
+            if (loadedSeeds.contains(seed))
             {
-                for (File file : listOfFiles) {
-                    if (file.isFile()) {
-                        int mapId = Integer.parseInt(file.getName().split("_")[1].split(Pattern.quote("."))[0]);
-                        try {
-                            BufferedReader br = new BufferedReader(new FileReader(file));
-                            String encodedData = br.readLine();
+                continue;
+            }
 
-                            if (!mapIDs_OLD.contains(mapId)) {
-                                mapIDs_OLD.add(mapId);
+            loadedSeeds.add(seed);
 
-                                int x = 0;
-                                int y = 0;
-                                int skipsLeft = 0;
-                                byte colorByte = 0;
-                                byte[][] map = new byte[128][128];
-                                for (int index = 0; index < encodedData.length(); index++) {
-                                    if (skipsLeft == 0) {
-                                        int end = index;
+            ResultSet mapsResultSet = MapStorageDB.getBySeed(dbConnection, seed);
 
-                                        while (encodedData.charAt(end) != ',')
-                                            end++;
+            try {
+                while (mapsResultSet.next())
+                {
+                    int mapId = mapsResultSet.getInt("map_id");
+                    byte[] mapDataSerialized = mapsResultSet.getBytes("data");
 
-                                        String str = encodedData.substring(index, end);
-                                        index = end;
+                    MapView mapView = Bukkit.getMap(mapId);
+                    if (mapView == null)
+                        continue;
 
-                                        colorByte = Byte.parseByte(str.substring(0, str.indexOf('_')));
+                    mapView.setTrackingPosition(false);
+                    for (MapRenderer renderer : mapView.getRenderers())
+                        mapView.removeRenderer(renderer);
 
-                                        skipsLeft = Integer.parseInt(str.substring(str.indexOf('_') + 1));
+                    mapView.addRenderer(new MapRenderer() {
+                        @Override
+                        public void render(@NonNull MapView mapViewNew, @NonNull MapCanvas mapCanvas, @NonNull Player player) {
+                            if (!mapIDs.contains(mapId)) {
+                                mapIDs.add(mapId);
+                                byte[][] mapData = MapStorageDB.deserializeByteArray2d(mapDataSerialized);
 
-                                    }
+                                mapView.setLocked(true);
+                                mapView.setTrackingPosition(false);
 
-                                    while (skipsLeft != 0) {
-                                        map[x][y] = colorByte;
-
-                                        y++;
-                                        if (y == 128) {
-                                            y = 0;
-                                            x++;
-                                        }
-
-                                        skipsLeft -= 1;
+                                for (int i = 0; i < mapData.length; i++) {
+                                    for (int j = 0; j < mapData[0].length; j++) {
+                                        byte colorByte = mapData[i][j];
+                                        mapCanvas.setPixelColor(i, j, ColorPalette.getColor(colorByte));
                                     }
                                 }
-
-                                // Cant know for sure how many copies the player has made, so it's just 99 to be on the safe side.
-                                MapStorageDB.store(dbConnection, mapId, seed, map, null, 99);
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
-                    }
+                    });
                 }
             }
-        }
-
-
-        ResultSet mapsResultSet = MapStorageDB.getBySeed(dbConnection, seed);
-
-        try {
-            while (mapsResultSet.next())
+            catch (Exception e)
             {
-                int mapId = mapsResultSet.getInt("map_id");
-                byte[] mapDataSerialized = mapsResultSet.getBytes("data");
-
-                MapView mapView = Bukkit.getMap(mapId);
-                if (mapView == null)
-                    continue;
-
-                mapView.setTrackingPosition(false);
-                for (MapRenderer renderer : mapView.getRenderers())
-                    mapView.removeRenderer(renderer);
-
-                mapView.addRenderer(new MapRenderer() {
-                    @Override
-                    public void render(@NonNull MapView mapViewNew, @NonNull MapCanvas mapCanvas, @NonNull Player player) {
-                    if (!mapIDs.contains(mapId)) {
-                        mapIDs.add(mapId);
-                        byte[][] mapData = MapStorageDB.deserializeByteArray2d(mapDataSerialized);
-
-                        mapView.setLocked(true);
-                        mapView.setTrackingPosition(false);
-
-                        for (int i = 0; i < mapData.length; i++) {
-                            for (int j = 0; j < mapData[0].length; j++) {
-                                byte colorByte = mapData[i][j];
-                                mapCanvas.setPixelColor(i, j, ColorPalette.getColor(colorByte));
-                            }
-                        }
-                    }
-                    }
-                });
+                e.printStackTrace();
             }
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+
 
 
         // Commands
+        getCommand("migratePictures").setExecutor(new MigrateCommand());
         getCommand("takePicture").setExecutor(new TakePictureCommand());
         getCommand("copyPicture").setExecutor(new CopyPictureCommand());
 

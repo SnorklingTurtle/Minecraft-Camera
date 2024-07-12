@@ -4,6 +4,7 @@ version: '2.4'
 description: Take Pictures.
 author: Nicholas Kopiwoda
 api-version: "1.20"
+softdepend: [Multiverse-Core]
 commands:
   takepicture:
     description: Take a picture
@@ -13,3 +14,5 @@ commands:
     description: Tag a picture
   fetchpicture:
     description: Fetch a picture by it's tag
+  migratepictures:
+    description: Migrate pictures
