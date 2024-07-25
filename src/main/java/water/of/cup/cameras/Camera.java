@@ -63,14 +63,18 @@ public class Camera extends JavaPlugin {
 
         for (World world : worlds)
         {
+
+;
             long seed = world.getSeed();
 
             getLogger().info("Found world '" + world.getName() + "' with seed " + world.getSeed());
 
-            if (loadedSeeds.contains(seed))
-            {
-                continue;
-            }
+
+
+//            if (loadedSeeds.contains(seed))
+//            {
+//                continue;
+//            }
 
             loadedSeeds.add(seed);
 
@@ -82,11 +86,15 @@ public class Camera extends JavaPlugin {
                     int mapId = mapsResultSet.getInt("map_id");
                     byte[] mapDataSerialized = mapsResultSet.getBytes("data");
 
-                    MapView mapView = Bukkit.getMap(mapId);
+                    MapView mapView = new PhotoMapView(mapId, world); // Bukkit.getMap(mapId); //
                     if (mapView == null)
+                    {
+                        getLogger().info("Skip map ...");
                         continue;
+                    }
+//                    getLogger().info("Init map ...");
 
-                    mapView.setTrackingPosition(false);
+
                     for (MapRenderer renderer : mapView.getRenderers())
                         mapView.removeRenderer(renderer);
 
@@ -97,15 +105,15 @@ public class Camera extends JavaPlugin {
                                 mapIDs.add(mapId);
                                 byte[][] mapData = MapStorageDB.deserializeByteArray2d(mapDataSerialized);
 
-                                mapView.setLocked(true);
-                                mapView.setTrackingPosition(false);
-
                                 for (int i = 0; i < mapData.length; i++) {
                                     for (int j = 0; j < mapData[0].length; j++) {
                                         byte colorByte = mapData[i][j];
                                         mapCanvas.setPixelColor(i, j, ColorPalette.getColor(colorByte));
                                     }
                                 }
+
+                                mapView.setLocked(true);
+                                mapView.setTrackingPosition(false);
                             }
                         }
                     });

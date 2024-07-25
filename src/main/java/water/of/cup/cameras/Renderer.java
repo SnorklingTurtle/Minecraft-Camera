@@ -10,7 +10,9 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
+import java.awt.*;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.*;
 
 interface Callback {
@@ -30,6 +32,7 @@ public class Renderer extends MapRenderer {
     int tracesPerTick;
     int renderDistance;
     byte[][] canvasBytes;
+    Color[][] canvasColors;
     MapCanvas canvas;
     MapView map;
     World world;
@@ -38,7 +41,7 @@ public class Renderer extends MapRenderer {
     private int currentY = 0;
     BukkitTask task;
     boolean isRenderingRandomly = true;
-    boolean isDebugging = false;
+    boolean isDebugging = true;
 
     // Overworld sky colors
     private static final Color[] skyColors = {
@@ -77,6 +80,7 @@ public class Renderer extends MapRenderer {
         yaw = Math.toRadians(eyes.getYaw() + 90);
 
         canvasBytes = new byte[128][128];
+        canvasColors = new Color[128][128];
 
         currentX = 0;
         currentY = 0;
@@ -106,6 +110,8 @@ public class Renderer extends MapRenderer {
 
     private void onRenderComplete()
     {
+        canvas.drawImage(0,0, getBufferedImage(canvasColors));
+
         // Save to DB
         Bukkit.getScheduler().runTaskAsynchronously(instance,
             () -> MapStorageDB.store(instance.getDbConnection(), map.getId(), world.getSeed(), canvasBytes, playerUUID, 1));
@@ -137,6 +143,7 @@ public class Renderer extends MapRenderer {
             // Add the picked coordinate to the set
             pickedCoordinates.add(coordinate);
         }
+
     }
 
     private void renderMapSectionSequentially(Callback onComplete) {
@@ -233,19 +240,46 @@ public class Renderer extends MapRenderer {
                 color = Utils.colorFromType(liquidResult.getHitBlock(), dye);
             }
 
-            canvas.setPixelColor(x, y, color);
+            // canvas.setPixelColor(x, y, color);
             canvasBytes[x][y] = ColorPalette.matchColor(color);
+
+            int red = transparentWater ? result.getHitBlock().getBlockData().getMapColor().getRed() : liquidResult.getHitBlock().getBlockData().getMapColor().getRed();
+            int green = transparentWater ? result.getHitBlock().getBlockData().getMapColor().getRed() : liquidResult.getHitBlock().getBlockData().getMapColor().getGreen();
+            int blue = transparentWater ? result.getHitBlock().getBlockData().getMapColor().getRed() : liquidResult.getHitBlock().getBlockData().getMapColor().getBlue();
+            canvasColors[x][y] = new Color(red, green, blue);
         } else if (liquidResult != null) {
             // set map pixel to color of liquid block found
             Color color = Utils.colorFromType(liquidResult.getHitBlock(), new double[]{1, 1, 1});
-            canvas.setPixelColor(x, y, color);
+            // canvas.setPixelColor(x, y, color);
             canvasBytes[x][y] = ColorPalette.matchColor(color);
+            org.bukkit.Color col = liquidResult.getHitBlock().getBlockData().getMapColor();;
+            canvasColors[x][y] = new Color(col.getRed(), col.getGreen(), col.getBlue());
         } else {
             // no block was hit, so we will assume we are looking at the sky
             Color skyColor = getSkyColor(world, y);
-            canvas.setPixelColor(x, y, skyColor);
+            // canvas.setPixelColor(x, y, skyColor);
             canvasBytes[x][y] = ColorPalette.matchColor(skyColor);
+            canvasColors[x][y] = skyColor;
         }
+    }
+
+
+    private BufferedImage getBufferedImage(Color[][] imageData) {
+        int sourceWidth = imageData[0].length;
+        int sourceHeight = imageData.length;
+
+        BufferedImage bufferedImage = new BufferedImage(sourceWidth, sourceHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics graphics = bufferedImage.getGraphics();
+
+        for (int y = 0; y < sourceHeight; y++) {
+            for (int x = 0; x < sourceWidth; x++) {
+                Color color = imageData[x][y];
+                graphics.setColor(color);
+                graphics.fillRect(x, y, 1, 1);
+            }
+        }
+
+        return bufferedImage;
     }
 
     private Color getSkyColor(World world, int y) {
