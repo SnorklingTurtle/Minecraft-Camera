@@ -35,8 +35,8 @@ public class Picture {
         }
 
         // check to make sure the player has paper
-        boolean isPaperless = p.hasPermission("cameras.paperless");
-        if (!isPaperless && !p.getInventory().contains(Material.PAPER)) {
+        boolean usePaper = p.hasPermission("cameras.usepaper");
+        if (usePaper && !p.getInventory().contains(Material.PAPER)) {
             Message.show(p, "settings.messages.nopaper");
             return false;
         }
@@ -63,7 +63,7 @@ public class Picture {
         // Play capture sound
         p.playSound(p.getLocation(), Sound.BLOCK_PISTON_EXTEND, 0.5F, 2.0F);
 
-        if (!isPaperless) {
+        if (usePaper) {
             // remove 1 paper from the player's inventory
             Utils.removePaperFromInventory(p, 1);
         }

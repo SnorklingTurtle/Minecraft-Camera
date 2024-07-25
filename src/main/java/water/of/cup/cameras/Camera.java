@@ -65,7 +65,10 @@ public class Camera extends JavaPlugin {
         {
             long seed = world.getSeed();
 
-            getLogger().info("Found world '" + world.getName() + "' with seed " + world.getSeed());
+            if (config.getBoolean("settings.debug"))
+            {
+                getLogger().info("Found world '" + world.getName() + "' with seed " + world.getSeed());
+            }
 
             if (loadedSeeds.contains(seed))
             {

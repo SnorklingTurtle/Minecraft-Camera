@@ -62,6 +62,7 @@ public class Renderer extends MapRenderer {
         this.canvas = canvas;
         this.map = map;
         this.time = world.getTime();
+        isDebugging = instance.getConfig().getBoolean("settings.debug");
 
         playerUUID = player.getUniqueId();
         eyes = player.getEyeLocation().clone();

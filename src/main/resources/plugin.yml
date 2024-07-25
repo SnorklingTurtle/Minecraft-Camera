@@ -3,7 +3,7 @@ name: Minecraft-Camera
 version: '2.4'
 description: Take Pictures.
 author: Nicholas Kopiwoda
-api-version: "1.20"
+api-version: "1.21"
 softdepend: [Multiverse-Core]
 commands:
   takepicture:
@@ -15,4 +15,4 @@ commands:
   fetchpicture:
     description: Fetch a picture by it's tag
   migratepictures:
-    description: Migrate pictures
+    description: Migrate pictures (should only be used if you are upgrading from versions below 1.18)

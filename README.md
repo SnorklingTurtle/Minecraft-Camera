@@ -63,9 +63,9 @@ cameras.useitem:
 cameras.command:
   description: Allow the command /takepicture
   default: op
-cameras.paperless:
+cameras.usepaper:
   description: Allow taking pictures without paper
-  default: false
+  default: true
 ```
 
 ## Usage
